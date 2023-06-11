@@ -79,8 +79,7 @@ def crawl(page_num, save_path='./', **kwargs):
     data_rows = soup.find_all('li', attrs={'class':'style-list-item'})  # Get all codimaps in the page
 
     # Get informations from each codimap
-    # for i in tqdm(range(len(data_rows)), desc=f"{page_num}/{args.end_page - args.start_page + 1}"):
-    for i in tqdm(range(3), desc=f"{page_num}/{args.end_page - args.start_page + 1}"):
+    for i in tqdm(range(len(data_rows)), desc=f"{page_num}/{args.end_page - args.start_page + 1}"):
         driver.get(url)
         WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'address')))
 
