@@ -10,7 +10,7 @@ The script can be run from the command line with the following syntax:
 
 ```bash
 python3 main.py --start_page 1 --end_page 5 --output_dir output
-
+```
 
 ### Prerequisites
 - Python >= 3.9
