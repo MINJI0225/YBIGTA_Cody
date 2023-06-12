@@ -1,5 +1,7 @@
 # 무신사 코디맵 크롤링 코드
 
+**멀티프로세싱 기능 추가하였습니다**
+
 병주가 작성한 코드를 기반으로 모듈화하고 성능을 개선해 두었습니다. Argument parser를 추가해 두어서 GUI / headless / server에서 모두 실행할 수 있게 해두었으며, argument로 페이지 번호를 전달할 수 있습니다. Output data는 **JSON** 형태이며 코디맵과 해당 코디맵에 속한 아이템 정보까지 모두 포함하게 됩니다.
 
 ## Getting Started
@@ -9,7 +11,7 @@
 The script can be run from the command line with the following syntax:
 
 ```bash
-python3 main.py --start_page 1 --end_page 5 --output_dir output
+python3 main.py --start_page 1 --end_page 5 --output_dir output --num_workers 4
 ```
 
 ### Prerequisites
@@ -42,17 +44,20 @@ The main script, `main.py`, can be run from the command line and accepts several
 
 You can run the script using the following command:
 <pre>
-python main.py --start_page START_PAGE --end_page END_PAGE --mode MODE --save_path SAVE_PATH --log_path LOG_PATH
+python main.py --start_page START_PAGE --end_page END_PAGE --mode MODE --save_path SAVE_PATH --log_path LOG_PATH --num_workers NUM_WORKERS
 </pre>
 
 
-Replace `START_PAGE`, `END_PAGE`, `MODE`, `SAVE_PATH`, and `LOG_PATH` with the desired values. Here is the explanation of each argument:
+Replace `START_PAGE`, `END_PAGE`, `MODE`, `SAVE_PATH`, `LOG_PATH` and `NUM_WORKERS` with the desired values. Here is the explanation of each argument:
 
 - `--start_page`: (Default: 1) The starting page number to start crawling.
 - `--end_page`: (Default: 2) The ending page number to stop crawling.
 - `--mode`: (Default: 'display') The mode of operation. Available options are 'display', 'headless', and 'server'.
 - `--save_path`: (Default: './outputs/') The path where the data will be saved.
 - `--log_path`: (Default: './') The path where the log will be saved.
+- `--debug` : Debugging purpose. If it is set, the program will only crawl the first 3 codimaps in each page for faster debugging.
+- `--num_workers` : Number of worker processes for multiprocessing. Each page will be assigned to a single process. If set to 1, the script will run with a single process.
+
 
 ## Output
 

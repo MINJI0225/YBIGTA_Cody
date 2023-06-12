@@ -1,4 +1,5 @@
 import os, logging, argparse
+import multiprocessing
 from bs4 import BeautifulSoup
 import selenium
 from selenium import webdriver
@@ -21,6 +22,9 @@ parser.add_argument('--end_page', type=int, default=2, help='End page number')
 parser.add_argument('--mode', type=str, default='display', help='Mode of crawling (display, headless, server)')
 parser.add_argument('--save_path', type=str, default='./outputs/', help='Path to save the data')
 parser.add_argument('--log_path', type=str, default='./', help='Path to save the log')
+parser.add_argument('--num_workers', type=int, default=1, help='Number of workers')
+parser.add_argument('--debug', action='store_true', help='Debugging purpose')
+
 args = parser.parse_args()
 
 # Set options for chrome driver
@@ -59,8 +63,7 @@ file_handler = logging.FileHandler(os.path.join(args.log_path, f"codimap_crawlin
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
-# Set driver
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
 
 # Crawl all codimaps in the page_num page
 def crawl(page_num, save_path='./', **kwargs):
@@ -70,6 +73,10 @@ def crawl(page_num, save_path='./', **kwargs):
 
         :return: codimap_list
     """
+    # Set driver
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    driver.implicitly_wait(3)
+
     codimap_list = []
     url = f"https://www.musinsa.com/app/codimap/lists?style_type=&tag_no=&brand=&display_cnt=60&list_kind=big&sort=comment_cnt&page={page_num}"
     driver.get(url)
@@ -79,7 +86,10 @@ def crawl(page_num, save_path='./', **kwargs):
     data_rows = soup.find_all('li', attrs={'class':'style-list-item'})  # Get all codimaps in the page
 
     # Get informations from each codimap
-    for i in tqdm(range(len(data_rows)), desc=f"{page_num}/{args.end_page - args.start_page + 1}"):
+    if args.debug:
+        data_rows = data_rows[:3]
+
+    for i in range(len(data_rows)):
         driver.get(url)
         WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'address')))
 
@@ -116,8 +126,11 @@ def crawl(page_num, save_path='./', **kwargs):
         detail_info['item_list'] = item_list
         codimap_list.append(detail_info)
 
-        logger.info(f"#{i+1} codimap crawling finished")
-        logger.info(f"Detail info: {detail_info}")
+        logger.info(f"Page {page_num}, #{i+1} codimap crawling finished")
+
+        # Show detail info if num_workers is 1
+        if args.num_workers == 1:
+            logger.info(f"Detail info: {detail_info}")
 
     # Save the data in json format
     if not os.path.exists(save_path):
@@ -126,7 +139,18 @@ def crawl(page_num, save_path='./', **kwargs):
     with open(os.path.join(save_path, f"codimap_list_{page_num}.json"), 'w') as json_file:
         json.dump(codimap_list, json_file, ensure_ascii=False, indent=4)
 
+    driver.close()
     return codimap_list
+
+def safe_crawl(page, save_path, error_pages):
+    # For error handling in multiprocessing
+    try:
+        crawl(page, save_path)
+    except Exception as e:
+        logger.error(f"{page} page crawling failed")
+        logger.error(e)
+        error_pages.append(page)
+
 
 # main function
 if __name__ == "__main__":
@@ -134,30 +158,47 @@ if __name__ == "__main__":
     logger.info(f"Start page: {args.start_page}")
     logger.info(f"End page: {args.end_page}")
     logger.info(f"Mode: {args.mode}")
+    logger.info(f"Save path: {args.save_path}")
+    logger.info(f"Log path: {args.log_path}")
+    logger.info(f"Debug mode: {args.debug}")
+    logger.info(f"Number of workers: {args.num_workers}")
 
-    # List containing error pages
-    error_pages = []
+    # List containing error pages - for multiprocessing (shared memory)
+    manager = multiprocessing.Manager()
+    error_pages = manager.list()
 
-    # Crawl from start_page to end_page
-    for page in range(args.start_page, args.end_page+1):
-        logger.info(f"{page} page crawling started")
+    # Multiprocessing feature for 4 processes
+    page_list = []
+    for i in range(args.start_page, args.end_page+1, args.num_workers):
+        page_list.append((i, min(i+args.num_workers-1, args.end_page)))
+    
+    if args.num_workers > 1:
+        # Multiprocessing
+        for pages in page_list:
+            logger.info(f"{pages[0]}-{pages[1]} page crawling started")
+            logger.info(f"Each page will be assigned to a single process")
 
-        # Exception handling for crawl function
-        try:
-            codimap_list = crawl(page, args.save_path)
-        except Exception as e:
-            logger.error(f"{page} page crawling failed")
-            logger.error(e)
-            error_pages.append(page)
-            continue
-
-        logger.info(f"{page} page crawling finished")
+            # Assign each page to a process
+            processes = []
+            for page in range(pages[0], pages[1]+1):
+                logger.info(f"Process for {page} page started")
+                p = multiprocessing.Process(target=safe_crawl, args=(page, args.save_path, error_pages))
+                p.start()
+                processes.append(p)
+            
+            for p in processes:
+                p.join()
+            
+            logger.info(f"{pages[0]}-{pages[1]} page crawling finished")
+    else:
+        # Single process
+        for page in range(args.start_page, args.end_page+1):
+            logger.info(f"{page} page crawling started")
+            safe_crawl(page, save_path, error_pages)
+            logger.info(f"{page} page crawling finished")
     
     # Print error pages
     logger.info(f"Error pages: {error_pages}")
-
-    # Close the driver
-    driver.close()
 
 
 # For backup
