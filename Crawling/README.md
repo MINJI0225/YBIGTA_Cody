@@ -11,7 +11,7 @@
 The script can be run from the command line with the following syntax:
 
 ```bash
-python3 main.py --start_page 1 --end_page 5 --output_dir output --num_workers 4
+python3 crawling.py --start_page 1 --end_page 5 --output_dir output --num_workers 4
 ```
 
 ### Prerequisites
@@ -46,17 +46,17 @@ python3 -m pip install -r requirements.txt
 ### Project Structure
 Here is the file structure of this project:
 
-- `main.py`: The main script for the web crawler.
+- `crawling.py`: The main script for the web crawler.
 - `utils.py`: Contains helper functions to extract detailed information from each webpage.
 - `README.md`: Documentation for this project.
 
-The main script, `main.py`, can be run from the command line and accepts several command-line arguments.
+The main script, `crawling.py`, can be run from the command line and accepts several command-line arguments.
 
 ## Running the Script
 
 You can run the script using the following command:
 <pre>
-python main.py --start_page START_PAGE --end_page END_PAGE --mode MODE --save_path SAVE_PATH --log_path LOG_PATH --num_workers NUM_WORKERS
+python crawling.py --start_page START_PAGE --end_page END_PAGE --mode MODE --save_path SAVE_PATH --log_path LOG_PATH --num_workers NUM_WORKERS
 </pre>
 
 
