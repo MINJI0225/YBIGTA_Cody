@@ -31,6 +31,18 @@ pip install -r requirements.txt
 
 This command installs all the Python packages necessary to run this project, such as `beautifulsoup4`, `selenium`, `pandas`, `numpy`, `tqdm`, and `webdriver_manager`.
 
+If you encounter an error related to the Python interpreter while installing the packages, try running the installation command as a Python module. This will ensure that the packages are installed in the correct environment. You can use either `python` or `python3` at the start of the command, depending on your Python setup:
+
+<pre>
+python -m pip install -r requirements.txt
+</pre>
+
+or
+
+<pre>
+python3 -m pip install -r requirements.txt
+</pre>
+
 ### Project Structure
 Here is the file structure of this project:
 
