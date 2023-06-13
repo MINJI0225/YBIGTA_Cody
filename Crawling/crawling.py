@@ -194,7 +194,7 @@ if __name__ == "__main__":
         # Single process
         for page in range(args.start_page, args.end_page+1):
             logger.info(f"{page} page crawling started")
-            safe_crawl(page, save_path, error_pages)
+            safe_crawl(page, args.save_path, error_pages)
             logger.info(f"{page} page crawling finished")
     
     # Print error pages
