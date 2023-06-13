@@ -7,7 +7,7 @@ function HomeScreen({navigation}) {
     return (
         <View style={styles.container}>
             <Image source={require('../assets/title.png')} />
-            <Button title="시작하기" onPress={() => navigation.navigate('옷BTI')} />
+            <Button title="시작하기" onPress={() => navigation.navigate('Cody_BTI')} />
             <StatusBar style="auto" />
         </View>
     );

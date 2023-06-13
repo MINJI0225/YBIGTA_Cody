@@ -2,12 +2,12 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Image, StyleSheet, Button, View, Dimensions } from "react-native";
 
-function mycloset_saved({navigation}) {
+function Mycloset_saved({navigation}) {
     
     return (
         <View style={styles.container}>
             <Image source={require('../assets/title.png')} />
-            <Button title="mycloset_saved" onPress={() => navigation.navigate('mycloset_setting')} />
+            <Button title="Mycloset_saved" onPress={() => navigation.navigate('Mycloset_setting')} />
             <StatusBar style="auto" />
         </View>
     );
@@ -26,4 +26,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default mycloset_saved;
+export default Mycloset_saved;

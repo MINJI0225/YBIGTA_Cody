@@ -2,9 +2,9 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Image, StyleSheet, Button, View, Dimensions, Text} from "react-native";
 import Separator from "../components/separator";
-import SaveButton from '../components/saveButton.js';
+import SaveButton from '../components/SaveButton.js';
 
-function mycloset_main({navigation}) {
+function Mycloset_main({navigation}) {
     
     return (
         <View style={styles.container}>
@@ -12,7 +12,7 @@ function mycloset_main({navigation}) {
                 <Button
                     color='#FFFFFF'
                     title="마이 클로젯 설정하기"
-                    onPress={() => navigation.navigate('mycloset_setting')}
+                    onPress={() => navigation.navigate('Mycloset_setting')}
                 />
             </View>
             <Separator />
@@ -25,7 +25,7 @@ function mycloset_main({navigation}) {
                 <Button
                 color='#FFFFFF'
                 title="내 옷 골라입기"
-                onPress={() => navigation.navigate('mycloset_myclothes')}
+                onPress={() => navigation.navigate('Mycloset_myclothes')}
                 />
             </View>
             <Separator />
@@ -38,7 +38,7 @@ function mycloset_main({navigation}) {
                 <Button
                 color='#FFFFFF'
                 title="저장한 코디 목록"
-                onPress={() => navigation.navigate('mycloset_saved')}
+                onPress={() => navigation.navigate('Mycloset_saved')}
                 />
             </View>
             <Separator />
@@ -76,4 +76,4 @@ const styles = StyleSheet.create({
       },
   });
 
-export default mycloset_main;
+export default Mycloset_main;

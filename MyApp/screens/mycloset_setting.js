@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Image, StyleSheet, Button, View, TouchableOpacity, Alert } from "react-native";
 
-function mycloset_setting({navigation}) {
+function Mycloset_setting({navigation}) {
     
     return (
       <View style={{
@@ -141,4 +141,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default mycloset_setting;
+export default Mycloset_setting;

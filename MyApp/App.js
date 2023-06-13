@@ -4,12 +4,12 @@ import { StyleSheet, Text, View } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "./screens/HomeScreen";
-import 옷BTI from "./screens/옷BTI";
-import 나의평소스타일 from "./screens/나의평소스타일";
-import mycloset_main from "./screens/mycloset_main";
-import mycloset_myclothes from "./screens/mycloset_myclothes";
-import mycloset_saved from "./screens/mycloset_saved";
-import mycloset_setting from "./screens/mycloset_setting";
+import Cody_BTI from "./screens/Cody_BTI";
+import MyStyle from "./screens/MyStyle";
+import Mycloset_main from "./screens/Mycloset_main";
+import Mycloset_Myclothes from "./screens/Mycloset_Myclothes";
+import Mycloset_saved from "./screens/Mycloset_saved";
+import Mycloset_setting from "./screens/Mycloset_setting";
 
 const Stack = createNativeStackNavigator();
 //*/
@@ -27,11 +27,14 @@ export default function App() {
 export default function Navigation() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="mycloset_main">
-        <Stack.Screen name="mycloset_main" component={mycloset_main} />
-        <Stack.Screen name="mycloset_myclothes" component={mycloset_myclothes} />
-        <Stack.Screen name="mycloset_saved" component={mycloset_saved} />
-        <Stack.Screen name="mycloset_setting" component={mycloset_setting} />
+      <Stack.Navigator initialRouteName="HomeScreen">
+        <Stack.Screen options = {{ headerShown: false}} name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="Cody_BTI" component={Cody_BTI} />
+        <Stack.Screen name="MyStyle" component={MyStyle} />
+        <Stack.Screen name="Mycloset_main" component={Mycloset_main} />
+        <Stack.Screen name="Mycloset_Myclothes" component={Mycloset_Myclothes} />
+        <Stack.Screen name="Mycloset_saved" component={Mycloset_saved} />
+        <Stack.Screen name="Mycloset_setting" component={Mycloset_setting} />
       </Stack.Navigator>
     </NavigationContainer>
   );

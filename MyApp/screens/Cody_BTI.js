@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import SaveButton from '../components/saveButton.js';
-
-function 옷BTI({ navigation }) {
+import SaveButton from '../components/SaveButton.js';
+function Cody_BTI({ navigation }) {
 
 // usestate생성
   const [gender, setGender] = useState('');
@@ -91,7 +90,7 @@ function 옷BTI({ navigation }) {
               style={pickerSelectStyles}
           />
           <SaveButton 
-            onPress={() => navigation.navigate('나의평소스타일')} 
+            onPress={() => navigation.navigate('MyStyle')} 
           />
         </View>
       </View>
@@ -133,4 +132,4 @@ const pickerSelectStyles = StyleSheet.create({
   }
 });
 
-export default 옷BTI;
+export default Cody_BTI;
