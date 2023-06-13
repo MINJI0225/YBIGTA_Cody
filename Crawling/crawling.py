@@ -64,7 +64,6 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-
 # Crawl all codimaps in the page_num page
 def crawl(page_num, save_path='./', **kwargs):
     """

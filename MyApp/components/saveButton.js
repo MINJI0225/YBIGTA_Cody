@@ -1,11 +1,26 @@
 import React from 'react';
 import { Button, View, StyleSheet } from 'react-native';
 
-function saveButton({navigation, onPress}) {
-//{ } 안에 onPress 넣고 .. onPress일 때를 버튼 활용하는 screen.js에서 정의해주면 됨
+function SaveButton({navigation}) {
+    const handlePress = () => {
+        fetch('http://localhost:5000/save', { // replace with your Flask server's URL and endpoint
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
     return (
         <View style={styles.button}>
-            <Button color='white' title="저장" onPress={onPress}/> 
+            <Button color='white' title="저장" onPress={handlePress}/> 
         </View>
     );
 };
@@ -19,7 +34,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#AFD3E2',
         borderRadius:5,
         justifyContent:'center',
-      },
+    },
 });
 
-export default saveButton;
+export default SaveButton;
