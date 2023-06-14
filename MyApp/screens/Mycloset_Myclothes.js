@@ -1,14 +1,17 @@
-import React from 'react';
+import React, {useState, useRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Image, StyleSheet, Button, View, Dimensions } from "react-native";
+import { Switch, Image, StyleSheet, Button, View, TouchableOpacity, Text } from "react-native";
+import ImageButton from "../components/ImageButton";
+
 
 function Mycloset_Myclothes({navigation}) {
-    
+    const mylink = '../assets/closet/green_poloshirt.png'
+    const myimg = require('../assets/closet/white_tshirt.png');
     return (
         <View style={styles.container}>
-            <Image source={require('../assets/title.png')} />
-            <Button title="Mycloset_Myclothes" onPress={() => navigation.navigate('Mycloset_saved')} />
-            <StatusBar style="auto" />
+            <ImageButton 
+              imgurl={myimg} />
+            <Text>{myimg}</Text>
         </View>
     );
 }

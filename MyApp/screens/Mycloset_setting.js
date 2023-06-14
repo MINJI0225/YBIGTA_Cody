@@ -1,122 +1,93 @@
 import React, {useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Image, StyleSheet, Button, View, TouchableOpacity, Alert } from "react-native";
+import ImageButton from "../components/ImageButton";
+import SaveButton from "../components/SaveButton";
 
 function Mycloset_setting({navigation}) {
-    
+    const urlList = [
+      {
+        unclicked : require('../assets/closet/white_tshirt.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+      {
+        unclicked : require('../assets/closet/white_sleeveless.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+      {
+        unclicked : require('../assets/closet/white_poloshirt.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+      {
+        unclicked : require('../assets/closet/white_skirt.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+      {
+        unclicked : require('../assets/closet/blue_jean.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+      {
+        unclicked : require('../assets/closet/green_overall.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+      {
+        unclicked : require('../assets/closet/necklace.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+      {
+        unclicked : require('../assets/closet/green_cap.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+      {
+        unclicked : require('../assets/closet/black_dress.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+      {
+        unclicked : require('../assets/closet/green_poloshirt.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+      {
+        unclicked : require('../assets/closet/white_hat.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+      {
+        unclicked : require('../assets/closet/green_backpack.png'),
+        clicked : require('../assets/closet/clicked.png')
+      },
+
+    ]
     return (
-      <View style={{
-        flexDirection:'col',
-        justifyContent:'center',
-        flex:1,
-      }}>
-        <View style={styles.eachRow}>
-          <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/white_tshirt.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/white_sleeveless.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/white_poloshirt.png')}
-            />
-          </TouchableOpacity>
-        </View>
+      <View style={styles.container}>
+        <View style={{
+          flexDirection:'col',
+          justifyContent:'center',
+          flex:1,
+        }}>
+          <View style={styles.eachRow}>
+            <ImageButton unclickedImg={urlList[0].unclicked} clickedImg={urlList[0].clicked}/>
+            <ImageButton unclickedImg={urlList[1].unclicked} />
+            <ImageButton unclickedImg={urlList[2].unclicked} />
+          </View>
 
-        <View style={styles.eachRow}>
-        <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/white_skirt.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/blue_jean.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/green_overall.png')}
-            />
-          </TouchableOpacity>
-        </View>
+          <View style={styles.eachRow}>
+            <ImageButton unclickedImg={urlList[3].unclicked} clickedImg={urlList[3].clicked}/>
+            <ImageButton unclickedImg={urlList[4].unclicked} clickedImg={urlList[4].clicked}/>
+            <ImageButton unclickedImg={urlList[5].unclicked} clickedImg={urlList[5].clicked}/>
+          </View>
 
-        <View style={styles.eachRow}>
-        <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/necklace.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/green_cap.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/black_dress.png')}
-            />
-          </TouchableOpacity>
-        </View>
+          <View style={styles.eachRow}>
+            <ImageButton unclickedImg={urlList[6].unclicked} clickedImg={urlList[6].clicked}/>
+            <ImageButton unclickedImg={urlList[7].unclicked} clickedImg={urlList[7].clicked}/>
+            <ImageButton unclickedImg={urlList[8].unclicked} clickedImg={urlList[8].clicked}/>
+          </View>
 
-        <View style={styles.eachRow}>
-        <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/green_poloshirt.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/white_hat.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this._onPressButton}
-            style={styles.typeBtn}>
-            <Image
-              style={styles.image}
-              source={require('../assets/closet/green_backpack.png')}
-            />
-          </TouchableOpacity>
+          <View style={styles.eachRow}>
+            <ImageButton unclickedImg={urlList[9].unclicked} clickedImg={urlList[9].clicked}/>
+            <ImageButton unclickedImg={urlList[10].unclicked} clickedImg={urlList[10].clicked}/>
+            <ImageButton unclickedImg={urlList[11].unclicked} clickedImg={urlList[11].clicked}/>
+          </View>
         </View>
+        <SaveButton title = "저장" />
       </View>
     );
 }
@@ -124,7 +95,7 @@ function Mycloset_setting({navigation}) {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#AFD3E2', // 하늘색 배경
+      backgroundColor: '#FFFFF',
       alignItems: 'center',
       justifyContent: 'center'
     },

@@ -25,7 +25,7 @@ function Mycloset_main({navigation}) {
                 <Button
                 color='#FFFFFF'
                 title="내 옷 골라입기"
-                onPress={() => navigation.navigate('Mycloset_myclothes')}
+                onPress={() => navigation.navigate('Mycloset_Myclothes')}
                 />
             </View>
             <Separator />
