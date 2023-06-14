@@ -1,7 +1,7 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Image, StyleSheet, Button, View, Dimensions, Text} from "react-native";
-import Separator from "../components/separator";
+import Separator from '../components/Separator.js';
 import SaveButton from '../components/SaveButton.js';
 
 function Mycloset_main({navigation}) {
