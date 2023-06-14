@@ -89,8 +89,10 @@ function Cody_BTI({ navigation }) {
               items={styleOptions}
               style={pickerSelectStyles}
           />
+        </View>
+        <View style={styles.buttonContainer}>
           <SaveButton 
-            onPress={() => navigation.navigate('MyStyle')} 
+            title='저장' onPress={() => navigation.navigate('MyStyle')} 
           />
         </View>
       </View>
@@ -101,7 +103,7 @@ function Cody_BTI({ navigation }) {
 const styles = StyleSheet.create({
   container: { //전체화면
     flex: 1,
-    //justifyContent: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
   },
@@ -110,11 +112,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginTop: '25%',
+    //marginTop: '25%',
     marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center'
   },
+  buttonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },  
   pickerContainer: {
     width: 200,
   }
@@ -129,6 +139,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: 'gray',
     borderRadius: 4,
     color: 'black',
+    marginBottom: 20,
   }
 });
 

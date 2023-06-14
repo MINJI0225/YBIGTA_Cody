@@ -49,7 +49,7 @@ function Mycloset_main({navigation}) {
             <StatusBar style="auto" />
 
             <Separator /><Separator /><Separator />
-            <SaveButton />
+            <SaveButton title='저장'/>
         </View>
     );
 }

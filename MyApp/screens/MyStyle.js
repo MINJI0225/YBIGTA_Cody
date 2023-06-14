@@ -4,34 +4,8 @@ import { StyleSheet, Image, View, FlatList } from 'react-native';
 import ImageSelectButton from '../components/ImageSelectButton.js';
 import SaveButton from '../components/SaveButton.js';
 
-
-//사진 라이브러리 접근 권한 요청
-//라이브러리 실행하여 이미지 선택하는 함수
-const selectImage = async () => {
-  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (status !== 'granted') {
-    console.log('권한이 거부되었습니다');
-    return;
-  }
-
-  // 이미지 라이브러리 실행 및 선택된 이미지 가져오기 (다중선택 옵션 추가)
-  const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsMultipleSelection: false,
-  });
-
-  if (!result.canceled) {
-    // 이미지가 선택된 경우
-    console.log(result.assets);
-    setSelectedImage(result.assets)
-    // 선택한 이미지를 처리하거나 화면에 표시하는 등의 작업
-  }
-};
-
-
-
 function MyStyle({navigation}) {
-  const [selectedImage, setSelectedImage] = useState(null); //선택한 이미지들을 저장하는 상태
+  const [selectedImages, setSelectedImages] = useState([]); //선택한 이미지들을 저장하는 상태
 
   //사진 라이브러리 접근 권한 요청
   //라이브러리 실행하여 이미지 선택하는 함수
@@ -45,13 +19,13 @@ function MyStyle({navigation}) {
     // 이미지 라이브러리 실행 및 선택된 이미지 가져오기 (다중선택 옵션 추가)
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: false,
+      allowsMultipleSelection: true,
     });
 
     if (!result.canceled) {
       // 이미지가 선택된 경우
       console.log(result.assets);
-      setSelectedImage(result.assets)
+      setSelectedImages(result.assets)
       // 선택한 이미지를 처리하거나 화면에 표시하는 등의 작업
     }
   };
@@ -60,18 +34,23 @@ function MyStyle({navigation}) {
     <View style={styles.container}>
       {/* 선택된 이미지가 있을 경우 이미지를 표시 */}
       <FlatList
-        data={selectedImage}
+        data={selectedImages} // selectedImages 리스트 내의 모든 항목에 대해
         keyExtractor={(item) => item.uri}
-        renderItem={({item}) => (
-          <Image source={{uri : item.uri}} style={styles.image} />
+        numColumns={3}
+        renderItem={({item}) => ( // i를 이렇게 render해라
+          <Image 
+            source={{uri : item.uri}} 
+            style={styles.image} 
+            resizeMode='cover'/>
         )} 
       />
       {/* 이미지 선택 버튼 */}
       <ImageSelectButton onPress={selectImage} />
       {/* 저장 버튼 */}
-      <SaveButton 
-            onPress={() => navigation.navigate('Mycloset_main')} 
-          />
+      <SaveButton
+        title='저장' 
+        onPress={() => navigation.navigate('Mycloset_main')} 
+      />
     </View>
   );
 }
@@ -79,14 +58,18 @@ function MyStyle({navigation}) {
 const styles = StyleSheet.create({
     container: { //전체화면
       flex: 1,
-      //justifyContent: 'center',
+      justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: '#FFFFFF',
+      padding: 20
     },
     image: {
-      width: 200,
-      height: 200,
+      width: '31%',
+      height: 150,
       marginBottom: 10,
+      marginTop: 10,
+      marginRight: 10,
+      borderRadius: 15
     },
     button: {
       margintop:'25%',
