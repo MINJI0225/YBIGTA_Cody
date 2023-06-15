@@ -1,31 +1,82 @@
-import React, {useState, useRef} from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Switch, Image, StyleSheet, Button, View, TouchableOpacity, Text } from "react-native";
+import React, { useState, } from 'react';
+import * as ImagePicker from 'expo-image-picker';
+import { StyleSheet, Image, View, FlatList } from 'react-native';
+import ImageSelectButton from '../components/ImageSelectButton.js';
+import SaveButton from '../components/SaveButton.js';
 import ImageButton from "../components/ImageButton";
 
 
 function Mycloset_Myclothes({navigation}) {
-    const mylink = '../assets/closet/green_poloshirt.png'
-    const myimg = require('../assets/closet/white_tshirt.png');
+  const urlList = [
+    {
+      unclicked : require('../assets/closet/white_tshirt.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },
+    {
+      unclicked : require('../assets/closet/white_sleeveless.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },
+    {
+      unclicked : require('../assets/closet/white_poloshirt.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },
+    {
+      unclicked : require('../assets/closet/white_skirt.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },
+    {
+      unclicked : require('../assets/closet/blue_jean.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },
+    {
+      unclicked : require('../assets/closet/green_overall.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },
+    {
+      unclicked : require('../assets/closet/necklace.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },
+    {
+      unclicked : require('../assets/closet/green_cap.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },
+    {
+      unclicked : require('../assets/closet/black_dress.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },
+    {
+      unclicked : require('../assets/closet/green_poloshirt.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },
+    {
+      unclicked : require('../assets/closet/white_hat.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },
+    {
+      unclicked : require('../assets/closet/green_backpack.png'),
+      clicked : require('../assets/closet/clicked.png')
+    },]
+
     return (
-        <View style={styles.container}>
-            <ImageButton 
-              imgurl={myimg} />
-            <Text>{myimg}</Text>
-        </View>
+      <View style={styles.container}>
+        <FlatList
+          data={urlList} // selectedImages 리스트 내의 모든 항목에 대해
+          numColumns={3}
+          renderItem={({item}) => ( // i를 이렇게 render해라
+            <ImageButton unclickedImg={item.unclicked} clickedImg={item.clicked}/>
+          )} 
+        />
+        <SaveButton title='저장'/>
+      </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#AFD3E2', // 하늘색 배경
+      backgroundColor: '#FFFFFF', // 하늘색 배경
       alignItems: 'center',
       justifyContent: 'center'
-    },
-    image: {
-      width: 200,
-      height: 200,
     },
   });
 

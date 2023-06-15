@@ -17,14 +17,12 @@ const ImageButton = props => {
   };
 
   return (
-    <View>
-      <TouchableOpacity
+    <TouchableOpacity
         onPress={onPress}>
         <Image
           style={styles.image}
           source={isClicked ? clickedImg : unclickedImg} />
-      </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 }
 ImageButton.defaultProps = {
