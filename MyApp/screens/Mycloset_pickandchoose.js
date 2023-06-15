@@ -1,12 +1,10 @@
 import React, { useState, } from 'react';
-import * as ImagePicker from 'expo-image-picker';
 import { StyleSheet, Image, View, FlatList } from 'react-native';
-import ImageSelectButton from '../components/ImageSelectButton.js';
 import SaveButton from '../components/SaveButton.js';
 import ImageButton from "../components/ImageButton";
 
 
-function Mycloset_Myclothes({navigation}) {
+function Mycloset_pickandchoose({navigation}) {
   const urlList = [
     {
       unclicked : require('../assets/closet/white_tshirt.png'),
@@ -80,4 +78,4 @@ const styles = StyleSheet.create({
     },
   });
 
-export default Mycloset_Myclothes;
+export default Mycloset_pickandchoose;

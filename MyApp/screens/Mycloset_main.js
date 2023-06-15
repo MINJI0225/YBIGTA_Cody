@@ -1,6 +1,6 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Image, StyleSheet, Button, View, Dimensions, Text} from "react-native";
+import { StyleSheet, Button, View, Text} from "react-native";
 import Separator from '../components/Separator.js';
 import SaveButton from '../components/SaveButton.js';
 
@@ -25,7 +25,7 @@ function Mycloset_main({navigation}) {
                 <Button
                 color='#FFFFFF'
                 title="내 옷 골라입기"
-                onPress={() => navigation.navigate('Mycloset_Myclothes')}
+                onPress={() => navigation.navigate('Mycloset_pickandchoose')}
                 />
             </View>
             <Separator />

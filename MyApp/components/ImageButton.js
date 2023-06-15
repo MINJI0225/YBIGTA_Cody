@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Image, StyleSheet, View, TouchableOpacity} from "react-native";
+import { Image, StyleSheet, TouchableOpacity} from "react-native";
 
 const ImageButton = props => {
   const {unclickedImg, clickedImg} = props;
