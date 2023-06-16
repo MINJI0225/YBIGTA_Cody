@@ -40,7 +40,7 @@ function Mycloset_pickandchoose({navigation}) {
       />
 
       <Separator />
-      <SaveButton title="저장"></SaveButton>
+      <SaveButton title="코디 조회하기"></SaveButton>
     </View>
   );
 }
