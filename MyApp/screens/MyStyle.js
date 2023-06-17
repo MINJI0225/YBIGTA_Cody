@@ -38,7 +38,7 @@ function MyStyle({navigation}) {
         keyExtractor={(item) => item.uri}
         numColumns={3}
         renderItem={({item}) => ( // i를 이렇게 render해라
-          <Image 
+          <Image
             source={{uri : item.uri}} 
             style={styles.image} 
             resizeMode='cover'/>
@@ -49,7 +49,7 @@ function MyStyle({navigation}) {
       {/* 저장 버튼 */}
       <SaveButton
         title='저장' 
-        onPress={() => navigation.navigate('Mycloset_main')} 
+        onPress={() => navigation.navigate('MainPage')} 
       />
     </View>
   );

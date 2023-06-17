@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "./screens/HomeScreen";
+import MainPage from "./screens/MainPage";
 import Cody_BTI from "./screens/Cody_BTI";
 import MyStyle from "./screens/MyStyle";
 import Mycloset_main from "./screens/Mycloset_main";
@@ -31,6 +32,7 @@ export default function Navigation() {
         <Stack.Screen options = {{ headerShown: false}} name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="Cody_BTI" component={Cody_BTI} />
         <Stack.Screen name="MyStyle" component={MyStyle} />
+        <Stack.Screen name="MainPage" component={MainPage} />
         <Stack.Screen name="Mycloset_main" component={Mycloset_main} />
         <Stack.Screen name="Mycloset_pickandchoose" component={Mycloset_pickandchoose} />
         <Stack.Screen name="Mycloset_saved" component={Mycloset_saved} />
