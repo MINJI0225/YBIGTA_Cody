@@ -18,34 +18,34 @@ https://velog.io/@jisoolee11/%EC%95%B1-%EA%B0%9C%EB%B0%9C-%EC%A4%80%EB%B9%84-Rea
 ### How to run
 1. Clone the repository:
 
-\```sh
+```sh
 git clone https://github.com/username/repo.git
-\```
+```
 
 2. Navigate to the `Backend` directory and start the Flask server:
 
-\```sh
+```sh
 cd Backend
 flask run
-\```
+```
 
 3. Open a new terminal window, navigate to the `MyApp` directory, and install Node.js dependencies:
 
-\```sh
+```sh
 cd ../MyApp
 npm install
-\```
+```
 
 4. Start the application with CLI:
 
-\```sh
+```sh
 expo start
-\```
+```
 
 
 ## Project Structure
 
-\```
+```
 .
 ├── Backend
 │   ├── __pycache__
@@ -65,4 +65,4 @@ expo start
     ├── package-lock.json
     ├── package.json
     └── screens
-\```
+```
