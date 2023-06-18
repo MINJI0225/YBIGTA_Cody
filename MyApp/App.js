@@ -12,6 +12,7 @@ import Mycloset_pickandchoose from "./screens/Mycloset_pickandchoose";
 import Mycloset_saved from "./screens/Mycloset_saved";
 import Mycloset_setting from "./screens/Mycloset_setting";
 
+// Create a native stack navigator
 const Stack = createNativeStackNavigator();
 //*/
 /*
@@ -26,6 +27,7 @@ export default function App() {
 */
 ///*
 export default function Navigation() {
+  // NavigationContainer is a component which manages our navigation tree and contains the navigation state
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="HomeScreen">
