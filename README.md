@@ -1,7 +1,7 @@
 # CodifyMe
 
 ## Getting Started
-
+API documentation 추가했으니 프론트 구현시 필요한 부분 작성해주시면 됩니다.
 ### Prerequisites
 아래의 dependency를 모두 설치해야 합니다. (아래 링크 참고)
 
