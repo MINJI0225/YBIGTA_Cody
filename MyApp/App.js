@@ -4,6 +4,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "./screens/HomeScreen";
+import SignInScreen from './screens/SignInScreen';
+import SignUpScreen from './screens/SignUpScreen';
 import MainPage from "./screens/MainPage";
 import Cody_BTI from "./screens/Cody_BTI";
 import MyStyle from "./screens/MyStyle";
@@ -32,6 +34,8 @@ export default function Navigation() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="HomeScreen">
         <Stack.Screen options = {{ headerShown: false}} name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="SignInScreen" component={SignInScreen} />
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
         <Stack.Screen name="Cody_BTI" component={Cody_BTI} />
         <Stack.Screen name="MyStyle" component={MyStyle} />
         <Stack.Screen name="MainPage" component={MainPage} />
