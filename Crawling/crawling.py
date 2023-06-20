@@ -89,7 +89,7 @@ def crawl(page_num, save_path='./', **kwargs):
     if args.debug:
         data_rows = data_rows[:3]
 
-    for i in range(len(data_rows)):
+    for i in tqdm(range(len(data_rows)), desc=f"Page {page_num}"):
         driver.get(url)
         WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, 'address')))
 
@@ -112,6 +112,7 @@ def crawl(page_num, save_path='./', **kwargs):
         item_list = []
         
         for item_url in detail_info['item_urls']:
+            time.sleep(2)
             driver.get(item_url)
             element = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "plus_cursor"))
@@ -164,6 +165,7 @@ if __name__ == "__main__":
     logger.info(f"Number of workers: {args.num_workers}")
 
     # List containing error pages - for multiprocessing (shared memory)
+    error_pages_single = []
     manager = multiprocessing.Manager()
     error_pages = manager.list()
 
@@ -194,7 +196,7 @@ if __name__ == "__main__":
         # Single process
         for page in range(args.start_page, args.end_page+1):
             logger.info(f"{page} page crawling started")
-            safe_crawl(page, args.save_path, error_pages)
+            crawl(page, args.save_path)
             logger.info(f"{page} page crawling finished")
     
     # Print error pages
