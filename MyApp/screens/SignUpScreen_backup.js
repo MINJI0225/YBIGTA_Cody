@@ -14,36 +14,36 @@ function SignUpScreen({ navigation }) {
   const saveUserData = () => {
 
     // Check if all values have been set
-    if(userId && password1 && email) {
+    if(userId && password1 && password2 && email) {
+      // If yes, navigate and/or send data to server
+
       // Prepare data to send to server
       const userData = {
+        userId: userId,
+        password1: password1,
+        password2: password2,
         email: email,
-        password: password1,
       };
 
       // Send data to server
-      fetch('http://localhost:5000/register', {
+      fetch('http://localhost:5000/api/saveUser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(userData),
       })
-      
       .then(response => response.json())
       .then(data => {
-        if (data.error) {
-          // Handle error (e.g., user already exists)
-          alert(data.error);
-        } else {
-          console.log('Success:', data);
-          // Navigate to next screen
-          navigation.navigate('Cody_BTI');
-        }
+        console.log('Success:', data);
       })
       .catch((error) => {
         console.error('Error:', error);
       });
+
+      // Navigate to next screen
+      navigation.navigate('Cody_BTI');
+    
     } else {
       // If no, alert the user to make a selection
       alert("모두 입력해주세요");
