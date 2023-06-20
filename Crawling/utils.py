@@ -30,7 +30,10 @@ def get_item_info(soup):
     item_category = soup.find('p', attrs={'class':'item_categories'})
     if item_category:
         big_category = item_category.find_all('a')[0].get_text().strip()
-        small_category = item_category.find_all('a')[1].get_text().strip()
+        try:
+            small_category = item_category.find_all('a')[1].get_text().strip()
+        except:
+            small_category = "none"
     else:
         logging.info(f"Error occured while crawling item_category")
 
