@@ -24,6 +24,9 @@ parser.add_argument('--save_path', type=str, default='./outputs/', help='Path to
 parser.add_argument('--log_path', type=str, default='./', help='Path to save the log')
 parser.add_argument('--num_workers', type=int, default=1, help='Number of workers')
 parser.add_argument('--debug', action='store_true', help='Debugging purpose')
+parser.add_argument('--use_proxy', action='store_true', help='Use proxy')
+parser.add_argument('--sleep_time', type=int, default=2, help='Sleep time for each page')
+parser.add_argument('--proxy_path', type=str, default='117.1.16.131:8080', help='Proxy IP and port number')
 
 args = parser.parse_args()
 
@@ -46,6 +49,10 @@ else:
     logging.info("Invalid mode. Please check the mode again. (display, headless, server))")
     exit()
 
+# Set proxy for chrome driver
+if args.use_proxy:
+    options.add_argument(f"--proxy-server={args.proxy_path}")
+
 # Logging setting
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -62,8 +69,6 @@ if not os.path.exists(args.log_path):
 file_handler = logging.FileHandler(os.path.join(args.log_path, f"codimap_crawling_{args.start_page}_{args.end_page}.log"))
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
-
-
 
 # Crawl all codimaps in the page_num page
 def crawl(page_num, save_path='./', **kwargs):
@@ -112,7 +117,7 @@ def crawl(page_num, save_path='./', **kwargs):
         item_list = []
         
         for item_url in detail_info['item_urls']:
-            time.sleep(2)
+            time.sleep(args.sleep_time)
             driver.get(item_url)
             element = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "plus_cursor"))
