@@ -23,7 +23,7 @@ import Mycloset_setting from "./screens/Mycloset_setting";
 // Tabs 
 const TabNavigation = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator initialRouteName="HomeTabStack">
       <Tab.Screen
           name="MyclosetTabStack"
           component={MyclosetTabStack}
