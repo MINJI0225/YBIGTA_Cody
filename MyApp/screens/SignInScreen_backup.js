@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native';
 import SaveButton from '../components/SaveButton.js';
 
+
 function SignInScreen({ navigation }) {
   // Define states
   const [userId, setId] = useState("");
@@ -37,7 +38,7 @@ function SignInScreen({ navigation }) {
       });
 
       // Navigate to next screen
-      navigation.navigate('TabNavigation');
+      navigation.navigate('Cody_BTI');
     
     } else {
       // If no, alert the user to make a selection
@@ -129,7 +130,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     marginBottom: 5,
     paddingLeft: 10,
-    //placeholderTextColor: '#D9D9D9',
+    placeholderTextColor: '#D9D9D9',
   },
   buttonContainer: {
     justifyContent: 'center',
