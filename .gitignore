@@ -3,3 +3,6 @@
 
 # Ignore Crawling_codishop directory
 Crawling_codishop/
+
+# Ignore model checkpoints (Modeling/FashionModel/checkpoints)
+Modeling/FashionModel/checkpoints/
