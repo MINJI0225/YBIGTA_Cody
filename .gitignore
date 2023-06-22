@@ -3,3 +3,9 @@
 
 # Ignore Crawling_codishop directory
 Crawling_codishop/
+
+# Ignore filesin Modeling/FashionModel/checkpoints
+Modeling/FashionModel/checkpoints/*
+
+# Ignore db.sqlite
+Backend/instance/db.sqlite
