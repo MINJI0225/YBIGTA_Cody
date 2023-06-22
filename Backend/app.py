@@ -446,6 +446,7 @@ def get_userStyle():
     else:
         return jsonify({"error": "User style data not found"}), 404
 
+
 # 내 옷장 GET
 @app.route("/mycloset/get", methods=["GET"])
 def get_closet():
