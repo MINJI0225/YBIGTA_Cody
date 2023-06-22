@@ -6,6 +6,7 @@ import { Animated, Text, Image, StyleSheet, Button, View, Dimensions } from 'rea
 function HomeScreen({ navigation }) {
   const [isReady, setIsReady] = useState(false);
   const translateYAnim = useState(new Animated.Value(0))[0];
+  const fadeInAnim = useState(new Animated.Value(0))[0];
   const buttonOpacityAnim = useState(new Animated.Value(0))[0];
 
   useEffect(() => {
@@ -26,40 +27,57 @@ function HomeScreen({ navigation }) {
   }, [isReady]);
 
   const startAnimation = () => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(translateYAnim, {
-          toValue: -20,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.timing(translateYAnim, {
-          toValue: 0,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-
-    Animated.timing(buttonOpacityAnim, {
-      toValue: 1,
-      duration: 500,
-      delay: 2000,
-      useNativeDriver: true,
-    }).start();
+    Animated.parallel([
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(translateYAnim, {
+            toValue: -20,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateYAnim, {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ])
+      ),
+      Animated.timing(fadeInAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(buttonOpacityAnim, {
+        toValue: 1,
+        duration: 500,
+        delay: 3000,
+        useNativeDriver: true,
+      }),
+    ]).start();
   };
 
   return (
     isReady && (
       <View style={styles.container}>
-        <Animated.Text style={[styles.logotext, { transform: [{ translateY: translateYAnim }] }]}>
-          CodifyME
-        </Animated.Text>
-        <Animated.View style={[styles.buttonContainer, { opacity: buttonOpacityAnim }]}>
+        <Animated.View
+          style={[
+            styles.logotextContainer,
+            { transform: [{ translateY: translateYAnim }], opacity: fadeInAnim },
+          ]}
+        >
+          <Image
+            source={require('../assets/hanger.png')}
+            style={styles.image}
+          />
+          <Text style={styles.logotext}>CodifyME</Text>
+        </Animated.View>
+        <Animated.View
+          style={[styles.buttonContainer, { opacity: buttonOpacityAnim }]}
+        >
           <Button
-            title="시작하기"
+            title="시작하기                "
             onPress={() => navigation.navigate('SignInScreen')}
-            color="#AFD3E2"
+            color="grey"
           />
         </Animated.View>
         <StatusBar style="auto" />
@@ -75,6 +93,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  logotextContainer: {
+    alignItems: 'center',
+  },
   buttonContainer: {
     backgroundColor: '#FFFFFF',
     borderRadius: 40,
@@ -87,10 +108,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: '#FFFFFF',
   },
+  image: {
+    width: 200,
+    height: 200,
+    marginBottom: 30,
+  }
 });
 
 export default HomeScreen;
-
-
-
-

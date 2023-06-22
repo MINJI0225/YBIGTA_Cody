@@ -1,6 +1,6 @@
 import React, { useState, } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { StyleSheet, Image, View, FlatList, Alert } from 'react-native';
+import { StyleSheet, Image, View, FlatList } from 'react-native';
 import ImageSelectButton from '../components/ImageSelectButton.js';
 import SaveButton from '../components/SaveButton.js';
 
@@ -24,45 +24,9 @@ function MyStyle({navigation}) {
     });
 
     if (!result.canceled) {
+      console.log(result.assets);
       setSelectedImages(result.assets) // 선택한 이미지를 처리하거나 화면에 표시
     }
-  };
-
-  const saveData = async () => {
-    if (selectedImages.length !== 3) {
-      Alert.alert('이미지를 3개 선택해주세요');
-      return
-    }
-
-    const formData = new FormData();
-
-    selectedImages.forEach((image, index) => {
-      formData.append(`image${index}`, {
-        uri: image.uri,
-        type: 'image/jpeg',
-        name: image.fileName,
-      });
-    });
-
-    try {
-      const response = await fetch('http://your-server-url/api/saveData', { //여기 수정해야함
-        method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        body: formData,
-      });
-
-      if (response.ok) {
-        console.log('이미지 업로드 성공');
-        navigation.navigate('MainPage');
-      } else {
-        console.log('이미지 업로드 실패');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  navigation.navigate('StyleIcon')
   };
 
   return (
@@ -82,7 +46,9 @@ function MyStyle({navigation}) {
       {/* 이미지 선택 버튼 */}
       <ImageSelectButton onPress={selectImage} />
       {/* 저장 버튼 */}
-      <SaveButton title='저장' onPress={saveData} 
+      <SaveButton
+        title='저장' 
+        onPress={() => navigation.navigate('MainPage')} 
       />
     </View>
   );
