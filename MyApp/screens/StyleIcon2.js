@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet, View, Text } from 'react-native';
 import SaveButton from '../components/SaveButton';
+import AccumulativeGraph from './AccumulativeGraph';
 
 function StyleIcon({ navigation, route }) {
   const { data } = route.params;
@@ -44,6 +45,7 @@ function StyleIcon({ navigation, route }) {
       <View style={styles.contentContainer}>
         <Text style={styles.headerText}>{highestScoringStyle}</Text>
         <Image source={styleImageMap[highestScoringStyle]} style={styles.image} />
+        <AccumulativeGraph data={data} />
         <SaveButton title='코디 추천 받으러 가기' onPress={() => navigation.navigate('TabNavigation')} />
       </View>
     </View>

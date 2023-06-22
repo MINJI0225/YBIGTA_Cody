@@ -37,15 +37,15 @@ function MyStyle({navigation}) {
     const formData = new FormData();
 
     selectedImages.forEach((image, index) => {
-      formData.append(`image${index}`, {
+      formData.append('image', {
         uri: image.uri,
         type: 'image/jpeg',
-        name: image.fileName,
+        name: `image${index}.jpg`,
       });
     });
 
     try {
-      const response = await fetch('http://your-server-url/api/saveData', { //여기 수정해야함
+      const response = await fetch('http://localhost:5000/image/upload', { //여기 수정해야함
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -55,14 +55,14 @@ function MyStyle({navigation}) {
 
       if (response.ok) {
         console.log('이미지 업로드 성공');
-        navigation.navigate('MainPage');
+        navigation.navigate('LoadingScreen');
       } else {
         console.log('이미지 업로드 실패');
       }
     } catch (error) {
       console.error('Error:', error);
     }
-  navigation.navigate('StyleIcon')
+  navigation.navigate('LoadingScreen')
   };
 
   return (

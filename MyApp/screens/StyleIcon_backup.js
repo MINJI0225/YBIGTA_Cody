@@ -1,28 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, View, Text } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 import SaveButton from '../components/SaveButton';
 
-function StyleIcon({ navigation, route }) {
-  const { data } = route.params;
-
-  const findHighestScoringStyle = (data) => {
-    let highestScore = -Infinity;
-    let highestScoringStyle = '';
-
-    for (let style in data) {
-      if (data.hasOwnProperty(style)) {
-        const score = data[style];
-        if (score > highestScore) {
-          highestScore = score;
-          highestScoringStyle = style;
-        }
-      }
-    }
-
-    return highestScoringStyle;
-  };
-
-  const highestScoringStyle = findHighestScoringStyle(data);
+function StyleIcon({ navigation, style }) {
+  const [selectedStyle, setSelectedStyle] = useState('');
 
   const styleImageMap = {
     '아메리칸캐주얼': require('../assets/styleicon/AmericanCasual.png'),
@@ -39,11 +21,38 @@ function StyleIcon({ navigation, route }) {
     '스트릿': require('../assets/styleicon/Street.png'),
   };
 
+  const handleStyleChange = (style) => {
+    setSelectedStyle(style);
+  };
+
+  const pickerItems = [
+    { label: '아메리칸캐주얼', value: '아메리칸캐주얼' },
+    { label: '캐주얼', value: '캐주얼' },
+    { label: '시크', value: '시크' },
+    { label: '댄디', value: '댄디' },
+    { label: '포멀', value: '포멀' },
+    { label: '걸리시', value: '걸리시' },
+    { label: '골프', value: '골프' },
+    { label: '고프코어', value: '고프코어' },
+    { label: '레트로', value: '걸리시' },
+    { label: '로맨틱', value: '걸리시' },
+    { label: '스포츠', value: '걸리시' },
+    { label: '스트릿', value: '걸리시' },
+  ];
+
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
-        <Text style={styles.headerText}>{highestScoringStyle}</Text>
-        <Image source={styleImageMap[highestScoringStyle]} style={styles.image} />
+        <Text style={styles.headerText}>스타일을 선택해주세요</Text>
+        <RNPickerSelect
+          value={selectedStyle}
+          onValueChange={handleStyleChange}
+          style={pickerSelectStyles}
+          items={pickerItems}
+        />
+        {selectedStyle && (
+          <Image source={styleImageMap[selectedStyle]} style={styles.image} />
+        )}
         <SaveButton title='코디 추천 받으러 가기' onPress={() => navigation.navigate('TabNavigation')} />
       </View>
     </View>
@@ -74,6 +83,19 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 15,
     marginBottom: 20
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    marginBottom: 20,
   },
 });
 
