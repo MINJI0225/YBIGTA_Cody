@@ -1,6 +1,6 @@
 import React, { useState, } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { StyleSheet, Image, View, FlatList } from 'react-native';
+import { StyleSheet, Image, View, FlatList, Alert } from 'react-native';
 import ImageSelectButton from '../components/ImageSelectButton.js';
 import SaveButton from '../components/SaveButton.js';
 
@@ -29,8 +29,8 @@ function MyStyle({navigation}) {
   };
 
   const saveData = async () => {
-    if (selectedImages.length<=3) {
-      Alert.alert('이미지를 3개 이상 선택해주세요');
+    if (selectedImages.length!=3) {
+      Alert.alert('이미지를 3개 선택해주세요');
       return
     }
 
@@ -40,7 +40,7 @@ function MyStyle({navigation}) {
       formData.append(`image${index}`, {
         uri: image.uri,
         type: 'image/jpeg',
-        name: 'image.jpg',
+        name: image.fileName,
       });
     });
 
@@ -62,6 +62,7 @@ function MyStyle({navigation}) {
     } catch (error) {
       console.error('Error:', error);
     }
+  navigation.navigate('StyleIcon')
   };
 
   return (
@@ -81,7 +82,7 @@ function MyStyle({navigation}) {
       {/* 이미지 선택 버튼 */}
       <ImageSelectButton onPress={selectImage} />
       {/* 저장 버튼 */}
-      <SaveButton title='저장' onPress={saveData}
+      <SaveButton title='저장' onPress={saveData} 
       />
     </View>
   );
