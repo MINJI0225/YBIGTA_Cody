@@ -3,7 +3,22 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS, cross_origin
 from flask_session import Session
 from config import ApplicationConfig
+import importlib.util
+import os
 from model import db, User
+import torch
+
+# get the current path of app.py
+current_path = os.path.dirname(os.path.realpath(__file__))
+model_path = os.path.join(current_path, '../Modeling/FashionModel/model.py')
+spec = importlib.util.spec_from_file_location("model", model_path)
+model = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(model)
+
+# Load the model
+model = model.PlainEfficientnetB7(num_classes=12)
+model.load_state_dict(torch.load('../Modeling/FashionModel/checkpoints/best.pth', map_location=torch.device('cpu')))
+model.eval()
 
 app = Flask(__name__)
 app.config.from_object(ApplicationConfig)
@@ -16,7 +31,26 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+# @app.route('/predict', methods=['POST'])
+## img = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB) 이걸로 읽어와야함
+# def predict():
+#     data = request.json
+#     input_tensor = process_input(data)  # You would need to define this function to process your input
+#     with torch.no_grad():
+#         output = model(input_tensor)
+#     predictions = process_output(output)  # You would need to define this function to process your output
+#     return jsonify(predictions)
 
+
+@app.route("/image/upload", methods=["POST"])
+def image_upload():
+    files = request.files.getlist('image')
+    breakpoint()
+    if not files:
+        return {'error': 'No images foun'}, 400
+
+    return {'Success': "Image upload done"}, 200
+            
 @app.route('/api/saveData', methods=['POST'])
 def handle_post():
     data = request.get_json()

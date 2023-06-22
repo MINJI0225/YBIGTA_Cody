@@ -36,16 +36,23 @@ function MyStyle({navigation}) {
 
     const formData = new FormData();
 
+    // selectedImages.forEach((image, index) => {
+    //   formData.append(`image${index}`, {
+    //     uri: image.uri,
+    //     type: 'image/jpeg',
+    //     name: 'image.jpg',
+    //   });
+    // });
     selectedImages.forEach((image, index) => {
-      formData.append(`image${index}`, {
+      formData.append('image', {
         uri: image.uri,
         type: 'image/jpeg',
-        name: 'image.jpg',
+        name: `image${index}.jpg`,
       });
     });
 
     try {
-      const response = await fetch('http://your-server-url/api/saveData', { //여기 수정해야함
+      const response = await fetch('http://localhost:5000/image/upload', { //여기 수정해야함
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
