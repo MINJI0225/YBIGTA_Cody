@@ -1,9 +1,8 @@
 import React, { useState, } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { StyleSheet, Image, View, FlatList, Alert } from 'react-native';
+import { StyleSheet, Image, View, FlatList, Alert, Text } from 'react-native';
 import ImageSelectButton from '../components/ImageSelectButton.js';
 import SaveButton from '../components/SaveButton.js';
-
 
 function MyStyle({navigation}) {
   const [selectedImages, setSelectedImages] = useState([]); //선택한 이미지들을 저장하는 상태
@@ -67,23 +66,25 @@ function MyStyle({navigation}) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.imageContainer}>
       {/* 선택된 이미지가 있을 경우 이미지를 표시 */}
-      <FlatList
-        data={selectedImages} // selectedImages 리스트 내의 모든 항목에 대해
-        keyExtractor={(item) => item.uri}
-        numColumns={3}
-        renderItem={({item}) => ( // i를 이렇게 render해라
-          <Image
-            source={{uri : item.uri}} 
-            style={styles.image} 
-            resizeMode='cover'/>
-        )} 
-      />
-      {/* 이미지 선택 버튼 */}
-      <ImageSelectButton onPress={selectImage} />
-      {/* 저장 버튼 */}
-      <SaveButton title='저장' onPress={saveData} 
-      />
+        <FlatList
+          data={selectedImages} // selectedImages 리스트 내의 모든 항목에 대해
+          keyExtractor={(item) => item.uri}
+          numColumns={3}
+          renderItem={({item}) => ( // i를 이렇게 render해라
+            <Image
+              source={{uri : item.uri}} 
+              style={styles.image} 
+              resizeMode='cover'/>
+          )}
+        />
+        </View>
+        {/* 이미지 선택 버튼 */}
+        <ImageSelectButton onPress={selectImage} />
+        {/* 저장 버튼 */}
+        <SaveButton title='저장' onPress={saveData} 
+        />
     </View>
   );
 }
@@ -95,6 +96,11 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       backgroundColor: '#FFFFFF',
       padding: 20
+    },
+    imageContainer: {
+      flex: 1,
+      width: '100%',
+      maxHeight: '50%',
     },
     image: {
       width: '31%',
@@ -120,6 +126,10 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: 'bold',
     },
+    GeneralText: {
+      color: 'gray',
+      fontsize: 20
+    }
 });
 
 export default MyStyle;
