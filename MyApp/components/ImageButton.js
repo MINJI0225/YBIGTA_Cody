@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { Image, StyleSheet, TouchableOpacity} from "react-native";
 
 const ImageButton = props => {
-  const {unclickedImg, clickedImg} = props;
+  const {src} = props;
 
   const [isClicked, setIsClicked] = useState(false);
   const [count, setCount] = useState(1);
@@ -20,8 +20,8 @@ const ImageButton = props => {
     <TouchableOpacity
         onPress={onPress}>
         <Image
-          style={styles.image}
-          source={isClicked ? clickedImg : unclickedImg} />
+          style={isClicked ? styles.clicked : styles.unclicked}
+          source={src} />
     </TouchableOpacity>
   );
 }
@@ -30,12 +30,20 @@ ImageButton.defaultProps = {
 }
 
 const styles = StyleSheet.create({
-    image: {
-      borderRadius: 5,
+    unclicked: {
+      borderRadius: 10,
       overflow: 'hidden',
       borderWidth: 1,
-      borderColor: 'grey',
+      borderColor: 'white',
+      margin:5
     },
+    clicked: {
+      borderRadius: 15,
+      overflow: 'hidden',
+      borderWidth: 5,
+      borderColor: '#AFD3E2',
+      margin:5
+    }
   });
 
 
