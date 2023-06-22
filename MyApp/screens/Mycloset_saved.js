@@ -9,6 +9,7 @@ function Mycloset_saved({navigation}) {
       {image_url: "https://image.msscdn.net/images/codimap/detail/3369/detail_3369_1_500.jpg?202306192206"},
       {image_url: "https://image.msscdn.net/images/codimap/detail/1937/detail_1937_1_500.jpg?202306192206"}
     ]
+    
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView>
