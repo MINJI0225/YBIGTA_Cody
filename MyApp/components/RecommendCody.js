@@ -8,14 +8,34 @@ const CodySet = props => {
     const {cody} = props;
     const [isSelected, setIsSelected] = useState(true);
 
+    const fetchLike = async() => {
+      
+    }
+
+    const fetchData = async () => {
+      const likeData = {
+        styling_id: cody.id,
+      };
+      try {
+        const response = await fetch('http://localhost:5000/mycodi/post');
+        const data = await response.json();
+        setIsSelected(data)
+        console.log('Success:', data);
+      } catch (error) {
+        console.log('Error:', error);
+      }
+    };
+
     return (
-        <View>
+        <View style={{alignItems:'center'}}>
+            <Text style={styles.titleText}>{cody.title}</Text>
+            <Text style={styles.subText}>{cody.subText}</Text>
             <Image
                 source = {{uri:cody.image_url}}
                 style = {styles.image} />
             <View style={{flexDirection:'row', alignItems:'center'}}>
                 <FlatList
-                    data={cody.hashtag} // selectedImages 리스트 내의 모든 항목에 대해
+                    data={cody.hashtags} // selectedImages 리스트 내의 모든 항목에 대해
                     numColumns={3}
                     renderItem={({item}) => ( // i를 이렇게 render해라
                         <Text style={styles.hashtag}>#{item}</Text>
@@ -49,6 +69,16 @@ const CodySet = props => {
         paddingHorizontal:7,
         paddingVertical:3,
         marginBottom:10
+      },
+      titleText: {
+        fontSize:20,
+        marginBottom:10,
+        alignItems:'center',
+        fontWeight:'bold'
+      },
+      subText:{
+        fontSize:15,
+        marginBottom:5
       }
     });
   

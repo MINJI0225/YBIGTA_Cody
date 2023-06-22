@@ -35,16 +35,19 @@ const styles = StyleSheet.create({
       overflow: 'hidden',
       borderWidth: 1,
       borderColor: 'white',
-      margin:5
+      margin:5,
+      width:100,
+      height:150
     },
     clicked: {
       borderRadius: 15,
       overflow: 'hidden',
-      borderWidth: 5,
+      borderWidth: 4,
       borderColor: '#AFD3E2',
-      margin:5
+      margin:5,
+      width:100,
+      height:150
     }
   });
-
 
 export default ImageButton;

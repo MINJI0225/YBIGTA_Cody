@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View,Text,} from 'react-native';
+import {View,Text,StyleSheet} from 'react-native';
 import axios from 'axios'
 
 const WeatherComponent = props => {
@@ -26,7 +26,7 @@ const WeatherComponent = props => {
       if (!weatherData) {
         return (
           <View>
-            <Text>Loading...</Text>
+            <Text style={styles.weatherText}>Loading...</Text>
           </View>
         );
       }
@@ -35,7 +35,7 @@ const WeatherComponent = props => {
         <View>
           {weatherData ? (
             <>
-              <Text>{Math.round((parseFloat(weatherData)-273)*100)/100}°C</Text>
+              <Text style={styles.weatherText}>   {Math.round(parseFloat(weatherData)-273)}°C</Text>
             </>
           ) : (
             <Text>Loading...</Text>
@@ -44,4 +44,18 @@ const WeatherComponent = props => {
       );
 
 }
+
+const styles = StyleSheet.create({
+  container : {
+    flex: 1,
+    backgroundColor: '#FFFFFF', // 하늘색 배경
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  weatherText: {
+    fontSize:20,
+    marginBottom:3
+  },
+});
+
 export default WeatherComponent;

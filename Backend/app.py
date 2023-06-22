@@ -3,8 +3,17 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS, cross_origin
 from flask_session import Session
 from config import ApplicationConfig
+from utils import process_imagefiles, predict, index_to_category, indices_of_top_n
 from model import db, User, Styling, Codybti, UserStyle, MyCloset, MyCodi, Hashtag
 import random
+import torch
+from model_wrapper import PlainEfficientnetB7
+
+# Load the model
+model = PlainEfficientnetB7(num_classes=12)
+model.load_state_dict(torch.load('../Modeling/FashionModel/checkpoints/best.pth', map_location=torch.device('cpu')))
+model.eval()
+
 
 app = Flask(__name__)
 app.config.from_object(ApplicationConfig)
@@ -354,7 +363,7 @@ def post_mycodi():
         db.session.delete(mycodi_exists)
         db.session.commit()
         
-        return jsonify({"Success": "delete mycodi"})
+        return False
 
     new_mycodi = MyCodi(user_id=user_id, styling_id=styling_id)
     db.session.add(new_mycodi)
@@ -365,18 +374,26 @@ def post_mycodi():
         "styling_id": new_mycodi.styling_id
     })
     
-    return return_value
+    return True
 
 @app.route("/image/upload", methods=["POST"])
 def image_upload():
     files = request.files.getlist('image')
+    images = process_imagefiles(files)
+    predictions = predict(model, images)
+
+    # Get top 3 predictions
+    top3 = indices_of_top_n(predictions, 3)
+    print(predictions)
+    
+    # Print top 3 predictions with label mappping
+    print("Top 3 predictions: ")
+    for i in range(3):
+        print(index_to_category(top3[i]), predictions[top3[i]])
     
     if not files:
-        return {'error': 'No images found'}, 400
-    
-    for file in files:
-        file.save('./images/'+file.filename)
-        
+        return {'error': 'No images foun'}, 400
+
     return {'Success': "Image upload done"}, 200
 
 #옷bti GET
@@ -428,6 +445,7 @@ def get_userStyle():
         return jsonify(dict(top_3_styles)), 200
     else:
         return jsonify({"error": "User style data not found"}), 404
+
 
 # 내 옷장 GET
 @app.route("/mycloset/get", methods=["GET"])
@@ -490,6 +508,7 @@ def get_codimap():
             hashtags = [hashtag.tag for hashtag in styling.hashtags]
             
             codimap_list.append({
+                "id": styling.id,
                 "title": styling.title,
                 "styling_txt": styling.styling_txt,
                 "image_url": styling.image_url,
