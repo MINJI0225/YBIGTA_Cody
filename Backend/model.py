@@ -17,6 +17,11 @@ styling_hashtags = db.Table('styling_hashtags',
                             db.Column('hashtag_id', db.Integer, db.ForeignKey('hashtag.id'), primary_key=True)
                         )
 
+item_styling = db.Table('item_styling',
+                            db.Column('styling_id', db.Integer, db.ForeignKey('styling.id'), primary_key=True),
+                            db.Column('item_id', db.Integer, db.ForeignKey('item.id'), primary_key=True)
+                        )
+
 class Styling(db.Model):
     __tablename__ = "styling"
     id = db.Column(db.Integer, primary_key=True)
@@ -28,6 +33,15 @@ class Styling(db.Model):
     style_tag = db.Column(db.String(255))
     hashtags = db.relationship('Hashtag', secondary=styling_hashtags, backref='styling', lazy='subquery')
 
+class Item(db.Model):
+    __tablename__ = 'item'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    big_category = db.Column(db.String(255))
+    small_category = db.Column(db.String(255))
+    image_url = db.Column(db.String(255))
+    styling_id = db.relationship('Styling', secondary=item_styling, backref='styling', lazy='subquery')
+
 class Codybti(db.Model):
     __tablename__ = "codyBTI"
     user_id = db.Column(db.String(32), primary_key=True, unique=True, default=get_uuid)
@@ -38,18 +52,12 @@ class Codybti(db.Model):
 class UserStyle(db.Model):
     __tablename__ = "userStyle"
     user_id = db.Column(db.String(32), primary_key=True, unique=True, default=get_uuid)
-    street = db.Column(db.Integer)
-    casual = db.Column(db.Integer)
-    chic = db.Column(db.Integer)
-    sports = db.Column(db.Integer)
-    dandy = db.Column(db.Integer)
-    formal = db.Column(db.Integer)
-    girlish = db.Column(db.Integer)
-    romantic = db.Column(db.Integer)
-    retro = db.Column(db.Integer)
-    golf = db.Column(db.Integer)
-    american_casual = db.Column(db.Integer)
-    gothcore = db.Column(db.Integer)
+    style1 = db.Column(db.String(32))
+    pre1 = db.Column(db.Float)
+    style2 = db.Column(db.String(32))
+    pre2 = db.Column(db.Float)
+    style3 = db.Column(db.String(32))
+    pre3 = db.Column(db.Float)
     
 class MyCloset(db.Model):
     __tablename__ = "MyCloset"
