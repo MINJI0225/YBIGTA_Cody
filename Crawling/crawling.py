@@ -143,7 +143,7 @@ def crawl(page_num, save_path='./', **kwargs):
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
-    with open(os.path.join(save_path, f"codimap_list_{page_num}.json"), 'w') as json_file:
+    with open(os.path.join(save_path, f"codimap_list_{page_num}.json"), 'w', encoding='utf-8') as json_file:
         json.dump(codimap_list, json_file, ensure_ascii=False, indent=4)
 
     driver.close()

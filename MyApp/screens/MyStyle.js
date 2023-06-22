@@ -4,6 +4,7 @@ import { StyleSheet, Image, View, FlatList } from 'react-native';
 import ImageSelectButton from '../components/ImageSelectButton.js';
 import SaveButton from '../components/SaveButton.js';
 
+
 function MyStyle({navigation}) {
   const [selectedImages, setSelectedImages] = useState([]); //선택한 이미지들을 저장하는 상태
 
@@ -16,17 +17,50 @@ function MyStyle({navigation}) {
       return;
     }
 
-    // 이미지 라이브러리 실행 및 선택된 이미지 가져오기 (다중선택 옵션 추가)
+    // 이미지 라이브러리 실행 및 선택된 이미지 가져오기
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
+      allowsMultipleSelection: true, // 다중선택 옵션
     });
 
     if (!result.canceled) {
-      // 이미지가 선택된 경우
-      console.log(result.assets);
-      setSelectedImages(result.assets)
-      // 선택한 이미지를 처리하거나 화면에 표시하는 등의 작업
+      setSelectedImages(result.assets) // 선택한 이미지를 처리하거나 화면에 표시
+    }
+  };
+
+  const saveData = async () => {
+    if (selectedImages.length<=3) {
+      Alert.alert('이미지를 3개 이상 선택해주세요');
+      return
+    }
+
+    const formData = new FormData();
+
+    selectedImages.forEach((image, index) => {
+      formData.append(`image${index}`, {
+        uri: image.uri,
+        type: 'image/jpeg',
+        name: 'image.jpg',
+      });
+    });
+
+    try {
+      const response = await fetch('http://your-server-url/api/saveData', { //여기 수정해야함
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log('이미지 업로드 성공');
+        navigation.navigate('MainPage');
+      } else {
+        console.log('이미지 업로드 실패');
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
 
@@ -47,9 +81,7 @@ function MyStyle({navigation}) {
       {/* 이미지 선택 버튼 */}
       <ImageSelectButton onPress={selectImage} />
       {/* 저장 버튼 */}
-      <SaveButton
-        title='저장' 
-        onPress={() => navigation.navigate('MainPage')} 
+      <SaveButton title='저장' onPress={saveData}
       />
     </View>
   );
