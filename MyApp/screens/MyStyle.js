@@ -29,7 +29,11 @@ function MyStyle({navigation}) {
   };
 
   const saveData = async () => {
+<<<<<<< HEAD
     if (selectedImages.length !== 3) {
+=======
+    if (selectedImages.length!=3) {
+>>>>>>> aaf6d2817e3988080b540913fad7869a8e7006d3
       Alert.alert('이미지를 3개 선택해주세요');
       return
     }
