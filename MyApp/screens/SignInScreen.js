@@ -37,7 +37,7 @@ function SignInScreen({ navigation }) {
       });
 
       // Navigate to next screen
-      navigation.navigate('TabNavigation');
+      navigation.navigate('Cody_BTI');
     
     } else {
       // If no, alert the user to make a selection
