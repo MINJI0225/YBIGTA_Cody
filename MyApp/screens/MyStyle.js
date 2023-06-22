@@ -55,14 +55,14 @@ function MyStyle({navigation}) {
 
       if (response.ok) {
         console.log('이미지 업로드 성공');
-        navigation.navigate('MainPage');
+        navigation.navigate('LoadingScreen');
       } else {
         console.log('이미지 업로드 실패');
       }
     } catch (error) {
       console.error('Error:', error);
     }
-  navigation.navigate('StyleIcon')
+  navigation.navigate('LoadingScreen')
   };
 
   return (
