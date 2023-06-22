@@ -1,61 +1,52 @@
 import React from 'react';
-import { StyleSheet, Image, View, FlatList, Text} from 'react-native';
-import SaveButton from '../components/SaveButton.js';
-import Separator from "../components/Separator";
-import MyCheckBox from "../components/MyCheckBox";
-
+import { StyleSheet, View, FlatList, ScrollView} from "react-native";
+import ImageButton from "../components/ImageButton";
+import SaveButton from "../components/SaveButton";
 
 function Mycloset_pickandchoose({navigation}) {
-  const inMyClothes = [
-    {name : 'white t-shirt'},
-    {name : 'green polo shirt'},
-    {name : 'blue jean'}];
-
-  const outMyClothes = [
-    {name : 'white polo shirt'},
-    {name : 'black dress'},
-    {name : 'neacklace'},
-    {name : 'green overall'},
-    {name : 'white sleeveless'}
+  const urlList = [
+    { image_url : require('../assets/mycloset/black_knit.jpg') },
+    { image_url : require('../assets/mycloset/white_tshirt.jpg') },
+    { image_url : require('../assets/mycloset/black_long_skirt.jpg') },
+    { image_url : require('../assets/mycloset/cardigan.jpg') },
+    { image_url : require('../assets/mycloset/dark_denim_pants.jpg') },  
+    { image_url : require('../assets/mycloset/white_pants.jpg') },
+    { image_url : require('../assets/mycloset/black_slacks.jpg') },
+    { image_url : require('../assets/mycloset/short_denim_pants.jpg') },
+    { image_url : require('../assets/mycloset/black_tshirt.jpg') },
+    { image_url : require('../assets/mycloset/beige_slacks.jpg') },
+    { image_url : require('../assets/mycloset/light_denim_pants.jpg') },
+    { image_url : require('../assets/mycloset/long_sleeve_knit.jpg') },
+    { image_url : require('../assets/mycloset/white_shirt.jpg') },
+    { image_url : require('../assets/mycloset/black_shirt.jpg') },
+    { image_url : require('../assets/mycloset/white_short_skirt.png') },
   ]
-  return (
-    <View style={styles.container}>
-      <Text style={styles.titleText}>나의 옷장에 있는 옷{'\n'}</Text>
-      <FlatList
-        data={inMyClothes}
-        numColumns={2}
-        renderItem={({item}) => ( // i를 이렇게 render해라
-          <MyCheckBox name={item.name} />
-        )} 
-      />
 
-      <Separator />
-      <Text style={styles.titleText}>나의 옷장에 없는 옷{'\n'}</Text>
-      <FlatList
-        data={outMyClothes}
-        numColumns={2}
-        renderItem={({item}) => ( // i를 이렇게 render해라
-          <MyCheckBox name={item.name} />
-        )} 
-      />
-
-      <Separator />
-      <SaveButton title="코디 조회하기"></SaveButton>
-    </View>
-  );
+    return (
+      <View style={styles.container}>
+        <ScrollView style={{alignContent:'center'}}>
+          <FlatList
+            data={urlList} // selectedImages 리스트 내의 모든 항목에 대해
+            numColumns={3}
+            renderItem={({item}) => ( // i를 이렇게 render해라
+              <ImageButton src={item.image_url}/>
+            )} 
+          />
+          <View style={{alignItems:'center'}}>
+            <SaveButton title='코디 확인하기'/>  
+          </View>
+        </ScrollView>  
+      </View>
+    );
 }
 
 const styles = StyleSheet.create({
-    container : {
+    container: {
       flex: 1,
-      backgroundColor: '#FFFFFF', // 하늘색 배경
+      backgroundColor: '#FFFFFF',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'center'
     },
-    titleText : {
-      fontSize : 20,
-      fontWeight : 'bold'
-    }   
   });
 
 export default Mycloset_pickandchoose;
