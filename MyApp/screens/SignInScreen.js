@@ -21,7 +21,7 @@ function SignInScreen({ navigation }) {
       };
 
       // Send data to server
-      fetch('http://localhost:5000/api/saveUser', {
+      fetch('http://localhost:5000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -37,7 +37,7 @@ function SignInScreen({ navigation }) {
       });
 
       // Navigate to next screen
-      navigation.navigate('Cody_BTI');
+      navigation.navigate('TabNavigation');
     
     } else {
       // If no, alert the user to make a selection

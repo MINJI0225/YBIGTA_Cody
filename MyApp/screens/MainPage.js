@@ -7,17 +7,25 @@ import WeatherComponent from '../components/WeatherComponent';
 import RecommendCody from '../components/RecommendCody';
 
 function MainPage({navigation}) {
-  const savedCody = [
-    {image_url: "https://image.msscdn.net/images/codimap/detail/5873/detail_5873_1_500.jpg?202306192206",
-    hashtag:['hello', 'my', 'name']},
-    {image_url: "https://image.msscdn.net/images/codimap/detail/3369/detail_3369_1_500.jpg?202306192206",
-    hashtag:['is', 'se', 'a']},
-    {image_url: "https://image.msscdn.net/images/codimap/detail/1937/detail_1937_1_500.jpg?202306192206",
-    hashtag:['h','on','g']}
-  ]
+  const [loading, setLoading] = useState(true);
+  const [savedCody, setCody] = useState([]);
 
   // Location
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/codimap/get');
+        const data = await response.json();
+        setCody(data);
+        setLoading(false);
+        console.log('Success:', data);
+      } catch (error) {
+        console.log('Error:', error);
+      }
+    };
+
+    fetchData();
+
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -61,6 +69,14 @@ function MainPage({navigation}) {
   const onPressLeft = () => {
     setCount(count - 1);
   };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

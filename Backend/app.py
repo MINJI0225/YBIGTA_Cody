@@ -354,7 +354,7 @@ def post_mycodi():
         db.session.delete(mycodi_exists)
         db.session.commit()
         
-        return jsonify({"Success": "delete mycodi"})
+        return False
 
     new_mycodi = MyCodi(user_id=user_id, styling_id=styling_id)
     db.session.add(new_mycodi)
@@ -365,7 +365,7 @@ def post_mycodi():
         "styling_id": new_mycodi.styling_id
     })
     
-    return return_value
+    return True
 
 @app.route("/image/upload", methods=["POST"])
 def image_upload():
@@ -490,6 +490,7 @@ def get_codimap():
             hashtags = [hashtag.tag for hashtag in styling.hashtags]
             
             codimap_list.append({
+                "id": styling.id,
                 "title": styling.title,
                 "styling_txt": styling.styling_txt,
                 "image_url": styling.image_url,

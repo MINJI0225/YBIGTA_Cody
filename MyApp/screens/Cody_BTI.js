@@ -22,12 +22,20 @@ const genderOptions = [
   { label: '여성', value: '여성' },
 ];
 
-const sensitivityOptions = [
+const sensitivity1Options = [
   { label: '더위에 아주 민감', value: '더위에 아주 민감' },
   { label: '더위에 조금 민감', value: '더위에 조금 민감' },
   { label: '보통', value: '보통' },
   { label: '추위에 조금 민감', value: '추위에 조금 민감' },
   { label: '추위에 아주 민감', value: '추위에 아주 민감' },
+];
+
+const sensitivity2Options = [
+  { label: '아주 민감', value: '아주 민감' },
+  { label: '민감', value: '민감' },
+  { label: '보통', value: '보통' },
+  { label: '둔감', value: '둔감' },
+  { label: '아주 둔감', value: '아주 둔감' },
 ];
 
 
@@ -46,13 +54,13 @@ function Cody_BTI({ navigation }) {
       // Prepare data to send to server
       let data = {
         gender: gender,
-        sensitivity1: sensitivity1,
-        sensitivity2: sensitivity2,
+        cold: sensitivity1,
+        trend: sensitivity2,
         //style: style
       };
 
       // Send data to server
-      fetch('http://localhost:5000/api/saveData', {
+      fetch('http://localhost:5000/cbti/post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -80,8 +88,8 @@ function Cody_BTI({ navigation }) {
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Picker label="성별" value={gender} onValueChange={setGender} items={genderOptions} />
-        <Picker label="더위 / 추위에 민감한 정도" value={sensitivity1} onValueChange={setSensitivity1} items={sensitivityOptions} />
-        <Picker label="유행에 민감한 정도" value={sensitivity2} onValueChange={setSensitivity2} items={sensitivityOptions} />
+        <Picker label="더위 / 추위에 민감한 정도" value={sensitivity1} onValueChange={setSensitivity1} items={sensitivity1Options} />
+        <Picker label="유행에 민감한 정도" value={sensitivity2} onValueChange={setSensitivity2} items={sensitivity2Options} />
         {/*<Picker label="평소 선호하는 스타일" value={style} onValueChange={setStyle} items={styleOptions} />*/}
         <View style={styles.buttonContainer}>
           <SaveButton 
