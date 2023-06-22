@@ -9,7 +9,9 @@ const CodySet = props => {
     const [isSelected, setIsSelected] = useState(true);
 
     return (
-        <View>
+        <View style={{alignItems:'center'}}>
+            <Text style={styles.titleText}>{cody.title}</Text>
+            <Text style={styles.subText}>{cody.subText}</Text>
             <Image
                 source = {{uri:cody.image_url}}
                 style = {styles.image} />
@@ -49,6 +51,16 @@ const CodySet = props => {
         paddingHorizontal:7,
         paddingVertical:3,
         marginBottom:10
+      },
+      titleText: {
+        fontSize:20,
+        marginBottom:10,
+        alignItems:'center',
+        fontWeight:'bold'
+      },
+      subText:{
+        fontSize:15,
+        marginBottom:5
       }
     });
   
