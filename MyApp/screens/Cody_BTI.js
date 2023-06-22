@@ -3,7 +3,6 @@ import { Text, View, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import SaveButton from '../components/SaveButton.js';
 
-
 const Picker = ({ label, value, onValueChange, items }) => (
   <View style={styles.pickerContainer}>
     <Text style={styles.headerText}>{label}</Text>
@@ -23,20 +22,20 @@ const genderOptions = [
   { label: '여성', value: '여성' },
 ];
 
-const sensitivityOptions = [
-  { label: '매우 민감', value: '매우 민감' },
-  { label: '민감', value: '민감' },
+const sensitivity1Options = [
+  { label: '더위에 아주 민감', value: '더위에 아주 민감' },
+  { label: '더위에 조금 민감', value: '더위에 조금 민감' },
   { label: '보통', value: '보통' },
-  { label: '민감', value: '민감' },
-  { label: '둔감', value: '매우 둔감' },
+  { label: '추위에 조금 민감', value: '추위에 조금 민감' },
+  { label: '추위에 아주 민감', value: '추위에 아주 민감' },
 ];
 
-const styleOptions = [
-  { label: '스트릿', value: 'street' },
-  { label: '아메카지', value: 'amekaji' },
-  { label: '캐주얼', value: 'casual' },
-  { label: '포멀', value: 'formal' },
-  { label: '레트로', value: 'retro' },
+const sensitivity2Options = [
+  { label: '아주 민감', value: '아주 민감' },
+  { label: '민감', value: '민감' },
+  { label: '보통', value: '보통' },
+  { label: '둔감', value: '둔감' },
+  { label: '아주 둔감', value: '아주 둔감' },
 ];
 
 
@@ -45,24 +44,23 @@ function Cody_BTI({ navigation }) {
   const [gender, setGender] = useState('');
   const [sensitivity1, setSensitivity1] = useState('');
   const [sensitivity2, setSensitivity2] = useState('');
-  const [style, setStyle] = useState('');
 
   // Define function to check if all values have been set and save data
   const saveData = () => {
     // Check if all values have been set
-    if(gender && sensitivity1 && sensitivity2 && style) {
+    if(gender && sensitivity1 && sensitivity2) {
       // If yes, navigate and/or send data to server
 
       // Prepare data to send to server
       let data = {
         gender: gender,
-        sensitivity1: sensitivity1,
-        sensitivity2: sensitivity2,
-        style: style
+        cold: sensitivity1,
+        trend: sensitivity2,
+        //style: style
       };
 
       // Send data to server
-      fetch('http://localhost:5000/api/saveData', {
+      fetch('http://localhost:5000/cbti/post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -90,9 +88,9 @@ function Cody_BTI({ navigation }) {
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Picker label="성별" value={gender} onValueChange={setGender} items={genderOptions} />
-        <Picker label="추위에 민감한 정도" value={sensitivity1} onValueChange={setSensitivity1} items={sensitivityOptions} />
-        <Picker label="유행에 민감한 정도" value={sensitivity2} onValueChange={setSensitivity2} items={sensitivityOptions} />
-        <Picker label="평소 선호하는 스타일" value={style} onValueChange={setStyle} items={styleOptions} />
+        <Picker label="더위 / 추위에 민감한 정도" value={sensitivity1} onValueChange={setSensitivity1} items={sensitivity1Options} />
+        <Picker label="유행에 민감한 정도" value={sensitivity2} onValueChange={setSensitivity2} items={sensitivity2Options} />
+        {/*<Picker label="평소 선호하는 스타일" value={style} onValueChange={setStyle} items={styleOptions} />*/}
         <View style={styles.buttonContainer}>
           <SaveButton 
             title='저장' onPress={saveData}
@@ -104,11 +102,17 @@ function Cody_BTI({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { //전체화면
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF'
+  },
+  gradientBackground: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   contentContainer: {
     justifyContent: 'center',
@@ -130,12 +134,12 @@ const styles = StyleSheet.create({
   },  
   pickerContainer: {
     width: 200,
-  }
+  },
 });
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    fontSize: 16,
+    fontSize: 15,
     paddingVertical: 12,
     paddingHorizontal: 10,
     borderWidth: 1,
@@ -143,6 +147,8 @@ const pickerSelectStyles = StyleSheet.create({
     borderRadius: 4,
     color: 'black',
     marginBottom: 20,
+    textAlign: 'center',
+    marginBottom: 50
   }
 });
 

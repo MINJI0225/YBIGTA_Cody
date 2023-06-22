@@ -21,7 +21,7 @@ function SignInScreen({ navigation }) {
       };
 
       // Send data to server
-      fetch('http://localhost:5000/api/saveUser', {
+      fetch('http://localhost:5000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -19,6 +19,7 @@ import Mycloset_main from "./screens/Mycloset_main";
 import Mycloset_pickandchoose from "./screens/Mycloset_pickandchoose";
 import Mycloset_saved from "./screens/Mycloset_saved";
 import Mycloset_setting from "./screens/Mycloset_setting";
+import StyleIcon from "./screens/StyleIcon";
 
 // Tabs 
 const TabNavigation = () => {
@@ -86,6 +87,7 @@ const MyStyleStack = () => {
     <Stack.Navigator>
       <Stack.Screen name="Cody_BTI" component={Cody_BTI} />
       <Stack.Screen name="MyStyle" component={MyStyle} />
+      <Stack.Screen name="StyleIcon" component={StyleIcon} />
     </Stack.Navigator>
   )
 }
@@ -97,7 +99,19 @@ const App = () => {
       <Stack.Navigator initialRouteName="HomeScreen">
         <Stack.Screen options = {{ headerShown: false}} name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="SignInScreen" component={SignInScreen} />
-        <Stack.Screen options = {{ headerShown: false}} name="SignUpScreen" component={SignUpScreen} />
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+        <Stack.Screen name="Cody_BTI" component={Cody_BTI} 
+                      options={{
+                        headerStyle: {
+                          backgroundColor: '#AFD3E2',
+                          borderBottomColor: 'transparent',
+                        },
+                        headerTintColor: '#fff',
+                        headerTitleStyle: {fontWeight: 'bold'},
+                      }}
+                    />
+        <Stack.Screen name="MyStyle" component={MyStyle} />
+        <Stack.Screen name="StyleIcon" component={StyleIcon} />
         <Stack.Screen options = {{ headerShown: false}} name="TabNavigation" component={TabNavigation} />
       </Stack.Navigator>
     </NavigationContainer>

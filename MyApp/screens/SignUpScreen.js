@@ -14,36 +14,41 @@ function SignUpScreen({ navigation }) {
   const saveUserData = () => {
 
     // Check if all values have been set
-    if(userId && password1 && email) {
+    if(userId && password1 && password2 && email) {
       // Prepare data to send to server
-      const userData = {
-        email: email,
-        password: password1,
-      };
-
-      // Send data to server
-      fetch('http://localhost:5000/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userData),
-      })
-      
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          // Handle error (e.g., user already exists)
-          alert(data.error);
-        } else {
-          console.log('Success:', data);
-          // Navigate to next screen
-          navigation.navigate('Cody_BTI');
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+      if (password1 == password2) {
+        const userData = {
+          userId: userId,
+          email: email,
+          password: password1,
+        };
+  
+        // Send data to server
+        fetch('http://localhost:5000/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData),
+        })
+        
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            // Handle error (e.g., user already exists)
+            alert(data.error);
+          } else {
+            console.log('Success:', data);
+            // Navigate to next screen
+            navigation.navigate('Cody_BTI');
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      } else {
+        alert("비밀번호가 일치하지 않습니다");
+      }
     } else {
       // If no, alert the user to make a selection
       alert("모두 입력해주세요");
