@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Animated, Text, Image, StyleSheet, Button, View, Dimensions } from 'react-native';
 
-function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation }) {
   const [isReady, setIsReady] = useState(false);
   const translateYAnim = useState(new Animated.Value(0))[0];
   const fadeInAnim = useState(new Animated.Value(0))[0];

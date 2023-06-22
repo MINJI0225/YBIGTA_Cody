@@ -23,11 +23,11 @@ const genderOptions = [
 ];
 
 const sensitivityOptions = [
-  { label: '매우 민감', value: '매우 민감' },
-  { label: '민감', value: '민감' },
+  { label: '더위에 아주 민감', value: '더위에 아주 민감' },
+  { label: '더위에 조금 민감', value: '더위에 조금 민감' },
   { label: '보통', value: '보통' },
-  { label: '민감', value: '민감' },
-  { label: '둔감', value: '매우 둔감' },
+  { label: '추위에 조금 민감', value: '추위에 조금 민감' },
+  { label: '추위에 아주 민감', value: '추위에 아주 민감' },
 ];
 
 
@@ -80,7 +80,7 @@ function Cody_BTI({ navigation }) {
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Picker label="성별" value={gender} onValueChange={setGender} items={genderOptions} />
-        <Picker label="더위에 민감한 정도" value={sensitivity1} onValueChange={setSensitivity1} items={sensitivityOptions} />
+        <Picker label="더위 / 추위에 민감한 정도" value={sensitivity1} onValueChange={setSensitivity1} items={sensitivityOptions} />
         <Picker label="유행에 민감한 정도" value={sensitivity2} onValueChange={setSensitivity2} items={sensitivityOptions} />
         {/*<Picker label="평소 선호하는 스타일" value={style} onValueChange={setStyle} items={styleOptions} />*/}
         <View style={styles.buttonContainer}>
