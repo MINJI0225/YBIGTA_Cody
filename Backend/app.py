@@ -4,16 +4,18 @@ from flask_cors import CORS, cross_origin
 from flask_session import Session
 from config import ApplicationConfig
 from utils import process_imagefiles, predict, index_to_category, indices_of_top_n
-from model import db, User, Styling, Codybti, UserStyle, MyCloset, MyCodi, Hashtag
+from utils import calculate_color_difference
+from model import db, User, Styling, Codybti, UserStyle, MyCloset, MyCodi, Hashtag, Item
 import random
 import torch
 from model_wrapper import PlainEfficientnetB7
+from sqlalchemy.orm import joinedload
+
 
 # Load the model
 model = PlainEfficientnetB7(num_classes=12)
 model.load_state_dict(torch.load('../Modeling/FashionModel/checkpoints/best.pth', map_location=torch.device('cpu')))
 model.eval()
-
 
 app = Flask(__name__)
 app.config.from_object(ApplicationConfig)
@@ -24,140 +26,8 @@ server_session = Session(app)
 server_session.init_app(app)
 db.init_app(app)
 
-'''
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-import json
-from datetime import datetime
-import math
-
-app = Flask(__name__)
-app.config.from_object(ApplicationConfig)
-
-db = SQLAlchemy(app)
-
-# Define database models
-class Styling(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255))
-    styling_date = db.Column(db.Date)
-    view_num = db.Column(db.Integer)
-    styling_txt = db.Column(db.Text)
-    image_url = db.Column(db.String(255))
-    style_tag = db.Column(db.String(255))
-    items = db.relationship('Item', secondary='item_styling', lazy='subquery',
-                            backref=db.backref('stylings', lazy=True))
-    styling_hashtags = db.relationship('Hashtag', secondary='styling_hashtags', lazy='subquery',
-                                       backref=db.backref('stylings', lazy=True))
-
-item_styling = db.Table('item_styling',
-                        db.Column('item_id', db.Integer, db.ForeignKey('item.id'), primary_key=True),
-                        db.Column('styling_id', db.Integer, db.ForeignKey('styling.id'), primary_key=True)
-                        )
-
-styling_hashtags = db.Table('styling_hashtags',
-                            db.Column('styling_id', db.Integer, db.ForeignKey('styling.id'), primary_key=True),
-                            db.Column('hashtag_id', db.Integer, db.ForeignKey('hashtag.id'), primary_key=True)
-                        )
-
-class Item(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255))
-    big_category = db.Column(db.String(255))
-    small_category = db.Column(db.String(255))
-    image_url = db.Column(db.String(255))
-    avg_color_top_r = db.Column(db.Float)
-    avg_color_top_g = db.Column(db.Float)
-    avg_color_top_b = db.Column(db.Float)
-    avg_color_bottom_r = db.Column(db.Float)
-    avg_color_bottom_g = db.Column(db.Float)
-    avg_color_bottom_b = db.Column(db.Float)
-    avg_color_whole_r = db.Column(db.Float)
-    avg_color_whole_g = db.Column(db.Float)
-    avg_color_whole_b = db.Column(db.Float)
-    styling_id = db.Column(db.Integer, db.ForeignKey('styling.id'))
-    item_hashtags = db.relationship('Hashtag', secondary='item_hashtags', lazy='subquery',
-                                    backref=db.backref('items', lazy=True))
-
-item_hashtags = db.Table('item_hashtags',
-                         db.Column('item_id', db.Integer, db.ForeignKey('item.id'), primary_key=True),
-                         db.Column('hashtag_id', db.Integer, db.ForeignKey('hashtag.id'), primary_key=True)
-                        )
-
-class Hashtag(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    tag = db.Column(db.String(255))
-
 with app.app_context():
     db.create_all()
-
-    with open(f'./codimap_list.json', 'r') as file:
-            data = json.load(file)
-
-    # Insert data into the existing tables
-    for styling in data:
-        styling_data = Styling(
-            title=styling['title'],
-            styling_date=datetime.strptime(styling['styling_date'], '%Y.%m.%d').date(),
-            view_num=styling['view_num'],
-            styling_txt=styling['styling_txt'],
-            image_url=styling['image_url'],
-            style_tag=styling['style_tag']
-        )
-        db.session.add(styling_data)
-        db.session.flush()
-
-        for item in styling['item_list']:
-            item_data = Item.query.filter_by(title=item['title']).first()
-            if not item_data:
-                avg_color_top = item.get('avg_color_top', [])
-                avg_color_bottom = item.get('avg_color_bottom', [])
-                avg_color_whole = item.get('avg_color_whole', [])
-                item_data = Item(
-                    title=item['title'],
-                    big_category=item['big_category'],
-                    small_category=item['small_category'],
-                    image_url=item['image_url'],
-                    avg_color_top_r=avg_color_top[0] if avg_color_top and not math.isnan(avg_color_top[0]) else None,
-                    avg_color_top_g=avg_color_top[1] if avg_color_top and not math.isnan(avg_color_top[1]) else None,
-                    avg_color_top_b=avg_color_top[2] if avg_color_top and not math.isnan(avg_color_top[2]) else None,
-                    avg_color_bottom_r=avg_color_bottom[0] if avg_color_bottom and not math.isnan(avg_color_bottom[0]) else None,
-                    avg_color_bottom_g=avg_color_bottom[1] if avg_color_bottom and not math.isnan(avg_color_bottom[1]) else None,
-                    avg_color_bottom_b=avg_color_bottom[2] if avg_color_bottom and not math.isnan(avg_color_bottom[2]) else None,
-                    avg_color_whole_r=avg_color_whole[0] if avg_color_whole and not math.isnan(avg_color_whole[0]) else None,
-                    avg_color_whole_g=avg_color_whole[1] if avg_color_whole and not math.isnan(avg_color_whole[1]) else None,
-                    avg_color_whole_b=avg_color_whole[2] if avg_color_whole and not math.isnan(avg_color_whole[2]) else None
-                )
-                db.session.add(item_data)
-                db.session.flush()
-
-            styling_data.items.append(item_data)
-
-            for hashtag in item['item_hashtags']:
-                hashtag_data = Hashtag.query.filter_by(tag=hashtag).first()
-                if not hashtag_data:
-                    hashtag_data = Hashtag(tag=hashtag)
-                    db.session.add(hashtag_data)
-                    db.session.flush()
-
-                item_data.item_hashtags.append(hashtag_data)
-
-        for hashtag in styling['hashtags']:
-            hashtag_data = Hashtag.query.filter_by(tag=hashtag).first()
-            if not hashtag_data:
-                hashtag_data = Hashtag(tag=hashtag)
-                db.session.add(hashtag_data)
-                db.session.flush()
-
-            styling_data.styling_hashtags.append(hashtag_data)
-
-    # Commit changes to the database
-    db.session.commit()
-
-'''
-with app.app_context():
-    db.create_all()
-
 
 @app.route('/api/saveData', methods=['POST'])
 def handle_post():
@@ -350,6 +220,66 @@ def post_closet():
     })
 
     return return_value
+
+
+@app.route("/mycloset/choice", methods=["POST"])
+def choice_codi():
+    item_mappings = {
+        "white_tshirt" : "반소매 티셔츠", "black_tshirt" : "반소매 티셔츠", "white_shirt" : "셔츠/블라우스",
+        "black_shirt" : "셔츠/블라우스", "half_knit" : "니트/스웨터", "long_knit" : "니트/스웨터",
+        "cardigan" : "카디건", "black_slacks" : "슈트 팬츠/슬랙스", "beige_slacks" : "슈트 팬츠/슬랙스",
+        "sky_jean" : "데님 팬츠", "blue_jean" : "데님 팬츠", "white_cotton" : "코튼 팬츠",
+        "half_jean" : "숏 팬츠", "white_skirt" : "미니스커트", "black_skirt" : "롱스커트"
+    }
+
+    color_mappings = {
+        "white_tshirt" : (243, 244, 239), "black_tshirt" : (31, 32, 36), "white_shirt" : (243, 244, 239),
+        "black_shirt" : (31, 32, 36), "half_knit" : (243, 244, 239), "long_knit" : (220, 211, 200),
+        "cardigan" : (227, 223, 211), "black_slacks" : (31, 32, 36), "beige_slacks" : (190, 185, 173),
+        "sky_jean" : (155, 162, 178), "blue_jean" : (43, 48, 70), "white_cotton" : (242, 243, 247),
+        "half_jean" : (138, 160, 186), "white_skirt" : (243, 244, 239), "black_skirt" : (33, 28, 34)
+    }
+
+    # When user select the item, the item is posted to the server
+    # and the server will return the codi that matches the item
+    selected_category = item_mappings[request.json["selected_item"]]
+    selected_color = color_mappings[request.json["selected_item"]]
+    items = Item.query.filter(Item.small_category == selected_category).all()
+
+    item_recommendations = []
+    for item in items:
+        if selected_category in ["반소매 티셔츠", "셔츠/블라우스", "니트/스웨터", "카디건"]:
+            item_color = (item.avg_color_top_r, item.avg_color_top_g, item.avg_color_top_b)
+        elif selected_category in ["슈트 팬츠/슬랙스", "데님 팬츠", "코튼 팬츠", "숏 팬츠", "미니스커트", "롱스커트"]:
+            item_color = (item.avg_color_bottom_r, item.avg_color_bottom_g, item.avg_color_bottom_b)
+        else:
+            item_color = (item.avg_color_whole_r, item.avg_color_whole_g, item.avg_color_whole_b)
+        
+        # Check if item_color includes null value
+        if None in item_color:
+            continue
+
+        if calculate_color_difference(selected_color, item_color) < 10:
+            item_recommendations.append(item)
+    
+    # Get Stylings using styings_id
+    styling_lst = []
+    for item in item_recommendations:
+        styling_lst.append(item.styling_id[0])
+
+    codimap_list = []
+    for styling in styling_lst:
+        hashtags = [hashtag.tag for hashtag in styling.hashtags]
+        
+        codimap_list.append({
+            "id": styling.id,
+            "title": styling.title,
+            "styling_txt": styling.styling_txt,
+            "image_url": styling.image_url,
+            "hashtags": hashtags
+        })
+    
+    return jsonify(codimap_list), 200
 
 
 @app.route("/mycodi/post", methods=["POST"])

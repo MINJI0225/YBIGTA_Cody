@@ -31,7 +31,9 @@ class Styling(db.Model):
     styling_txt = db.Column(db.Text)
     image_url = db.Column(db.String(255))
     style_tag = db.Column(db.String(255))
+    clo = db.Column(db.Float)
     hashtags = db.relationship('Hashtag', secondary=styling_hashtags, backref='styling', lazy='subquery')
+
 
 class Item(db.Model):
     __tablename__ = 'item'
@@ -40,7 +42,17 @@ class Item(db.Model):
     big_category = db.Column(db.String(255))
     small_category = db.Column(db.String(255))
     image_url = db.Column(db.String(255))
+    avg_color_top_r = db.Column(db.Float)
+    avg_color_top_g = db.Column(db.Float)
+    avg_color_top_b = db.Column(db.Float)
+    avg_color_bottom_r = db.Column(db.Float)
+    avg_color_bottom_g = db.Column(db.Float)
+    avg_color_bottom_b = db.Column(db.Float)
+    avg_color_whole_r = db.Column(db.Float)
+    avg_color_whole_g = db.Column(db.Float)
+    avg_color_whole_b = db.Column(db.Float)
     styling_id = db.relationship('Styling', secondary=item_styling, backref='styling', lazy='subquery')
+
 
 class Codybti(db.Model):
     __tablename__ = "codyBTI"
