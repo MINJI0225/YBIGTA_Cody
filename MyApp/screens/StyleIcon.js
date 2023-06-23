@@ -4,12 +4,14 @@ import SaveButton from '../components/SaveButton';
 
 function StyleIcon({ navigation, route }) {
   const { data } = route.params;
+  console.log(data);
 
   const findHighestScoringStyle = (data) => {
     let highestScore = -Infinity;
-    let highestScoringStyle = '';
+    let highestScoringStyle = data.style1;
+    console.log(highestScoringStyle);
 
-    for (let style in data) {
+    /*for (let style in data) {
       if (data.hasOwnProperty(style)) {
         const score = data[style];
         if (score > highestScore) {
@@ -17,7 +19,7 @@ function StyleIcon({ navigation, route }) {
           highestScoringStyle = style;
         }
       }
-    }
+    }*/
 
     return highestScoringStyle;
   };
