@@ -82,6 +82,7 @@ const MyclosetTabStack = () => {
       <Stack.Screen name="Mycloset_pickandchoose" component={Mycloset_pickandchoose} options={HeaderOptions} />
       <Stack.Screen name="Mycloset_saved" component={Mycloset_saved} options={HeaderOptions} />
       <Stack.Screen name="Mycloset_setting" component={Mycloset_setting} options={HeaderOptions} />
+      <Stack.Screen name="Mycloset_pickandchoose" component={Mycloset_pickandchoose} />
     </Stack.Navigator>
   )
 }
