@@ -10,7 +10,8 @@ import random
 import torch
 from model_wrapper import PlainEfficientnetB7
 from sqlalchemy.orm import joinedload
-
+from sqlalchemy import func
+import json, requests
 
 # Load the model
 model = PlainEfficientnetB7(num_classes=12)
@@ -429,32 +430,71 @@ def get_mycodi():
 
 @app.route("/codimap/post", methods=["POST"])
 def get_codimap():
+    # 1. ComfortClo of time
+    # 2. User style tag
+    # 3. User trendy
+
+    hour_temp_table = [30, 29, 28, 28, 26, 25, 25, 24, 24, 23, 23, 23]
+    trend_table = {
+        '아주 민감':5,
+        '민감':4,
+        '보통':3,
+        '둔감':2,
+        '아주 둔감':1
+    }
     user_id = session.get("user_id")
+    if not user_id:
+        user_id = "aa"
+    
     hour = request.json["hour"]
     isCloset = request.json["isCloset"]
+    isCloset = True if isCloset == 1 else False
+    temp = hour_temp_table[hour]
 
+    # Get user style tag
+    codybti = Codybti.query.filter_by(user_id=user_id).first()
+    trend_score = trend_table[codybti.trend]
 
-    
-    num = random.sample(range(1, 2000), 10)
-    
-    styling_lst = Styling.query.filter(Styling.id.in_(num)).all()
-    print(styling_lst)
-    
-    if len(styling_lst) > 0 :
-        codimap_list = []
-        for styling in styling_lst:
-            hashtags = [hashtag.tag for hashtag in styling.hashtags]
-            
-            codimap_list.append({
-                "id": styling.id,
-                "title": styling.title,
-                "styling_txt": styling.styling_txt,
-                "image_url": styling.image_url,
-                "hashtags": hashtags
-            })
-            
-        print(codimap_list)
+    if hour == 0:
+        # Current time recommendation
+        comfortClo = 0.5
+        threshold = 0.1
         
-            
-        return jsonify(codimap_list), 200
-    else : return jsonify({"error": "no styling list"}), 401
+        # Filter by comfortClo
+        styling_list = Styling.query.filter(Styling.style_tag == UserStyle.style1).order_by(
+                                    func.abs(Styling.clo - comfortClo)).all()
+    
+    else:
+        # Future time recommendation
+        comfortClo = 0.5
+        threshold = 0.1
+        
+        # Filter by comfortClo
+        styling_list = Styling.query.filter(Styling.style_tag == UserStyle.style1).order_by(
+                                    func.abs(Styling.clo - comfortClo)).all()
+
+    result_list = []
+    if trend_score >= 3:
+        # Get year from Styling table
+        for styling in styling_list:
+            styling_date = styling.styling_date  # Get the styling_date attribute
+            styling_year = styling_date.year  # Get the year from the styling_date
+            if styling_year in [2022, 2023]:
+                result_list.append(styling)
+    else:
+        result_list = styling_list
+
+    codimap_list = []
+    for styling in result_list:
+        hashtags = [hashtag.tag for hashtag in styling.hashtags]
+        
+        codimap_list.append({
+            "id": styling.id,
+            "title": styling.title,
+            "styling_txt": styling.styling_txt,
+            "image_url": styling.image_url,
+            "hashtags": hashtags
+        })
+
+
+    return jsonify(codimap_list), 200
