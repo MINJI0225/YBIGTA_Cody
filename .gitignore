@@ -7,5 +7,5 @@ Crawling_codishop/
 # Ignore filesin Modeling/FashionModel/checkpoints
 Modeling/FashionModel/checkpoints/*
 
-# Ignore db.sqlite
+# Ignore Backend/instance/db.sqlite
 Backend/instance/db.sqlite
