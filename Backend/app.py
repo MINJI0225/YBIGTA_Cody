@@ -500,7 +500,9 @@ def get_mycodi():
 @app.route("/codimap/post", methods=["POST"])
 def get_codimap():
     user_id = session.get("user_id")
-    temp = request.json["temp"]
+    hour = request.json["hour"]
+    isFuture = request.json["isFuture"]
+    isMyCloset = request.json["isMyCloset"]
     
     num = random.sample(range(1, 2000), 10)
     
