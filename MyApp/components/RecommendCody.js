@@ -35,7 +35,7 @@ const CodySet = props => {
                 style = {styles.image} />
             <View style={{flexDirection:'row', alignItems:'center'}}>
                 <FlatList
-                    data={cody.hashtags} // selectedImages 리스트 내의 모든 항목에 대해
+                    data={cody.hashtags.slice(0,3)} // selectedImages 리스트 내의 모든 항목에 대해
                     numColumns={3}
                     renderItem={({item}) => ( // i를 이렇게 render해라
                         <Text style={styles.hashtag}>#{item}</Text>

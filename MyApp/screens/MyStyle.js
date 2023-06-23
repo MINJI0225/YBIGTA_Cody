@@ -60,14 +60,13 @@ function MyStyle({navigation}) {
         console.log('이미지 업로드 실패');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.log('Error:', error);
     }
   navigation.navigate('LoadingScreen')
   };
 
   return (
     <View style={styles.container}>
-      {/* 선택된 이미지가 있을 경우 이미지를 표시 */}
       <FlatList
         data={selectedImages} // selectedImages 리스트 내의 모든 항목에 대해
         keyExtractor={(item) => item.uri}
@@ -79,9 +78,7 @@ function MyStyle({navigation}) {
             resizeMode='cover'/>
         )} 
       />
-      {/* 이미지 선택 버튼 */}
       <ImageSelectButton onPress={selectImage} />
-      {/* 저장 버튼 */}
       <SaveButton title='저장' onPress={saveData} 
       />
     </View>

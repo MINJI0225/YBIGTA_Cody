@@ -381,11 +381,27 @@ def image_upload():
     files = request.files.getlist('image')
     images = process_imagefiles(files)
     predictions = predict(model, images)
+    
+    user_id = session.get("user_id")
 
     # Get top 3 predictions
     top3 = indices_of_top_n(predictions, 3)
     print(predictions)
     
+    userStyle = UserStyle.query.filter_by(user_id=user_id).first()
+    if userStyle:
+        userStyle.style1 = index_to_category(top3[0])
+        userStyle.style2 = index_to_category(top3[1])
+        userStyle.style3 = index_to_category(top3[2])
+        userStyle.pre1 = predictions[top3[0]]
+        userStyle.pre2 = predictions[top3[1]]
+        userStyle.pre3 = predictions[top3[2]]
+        db.session.commit()
+        return jsonify({"Success": "modifed userStyle"}), 200
+    
+    new_userStyle = UserStyle(user_id=user_id, style1=index_to_category(top3[0]), style2=index_to_category(top3[1]), style3=index_to_category(top3[2]), pre1=predictions[top3[0]], pre2=predictions[top3[1]], pre3=predictions[top3[2]])
+    db.session.add(new_userStyle)
+    db.session.commit()
     # Print top 3 predictions with label mappping
     print("Top 3 predictions: ")
     for i in range(3):
@@ -422,27 +438,14 @@ def get_userStyle():
 
     if user_style:
         top_styles = {
-            "street": user_style.street,
-            "casual": user_style.casual,
-            "chic": user_style.chic,
-            "sports": user_style.sports,
-            "dandy": user_style.dandy,
-            "formal": user_style.formal,
-            "girlish": user_style.girlish,
-            "romantic": user_style.romantic,
-            "retro": user_style.retro,
-            "golf": user_style.golf,
-            "american_casual": user_style.american_casual,
-            "gothcore": user_style.gothcore
+            "style1": user_style.style1,
+            "pre1": user_style.pre1,
+            "style2": user_style.style2,
+            "pre2": user_style.pre2,
+            "style3": user_style.style3,
+            "pre3": user_style.pre3
         }
-
-        # Sort the styles by value in descending order
-        sorted_styles = sorted(top_styles.items(), key=lambda x: x[1], reverse=True)
-
-        # Get the top 3 styles
-        top_3_styles = sorted_styles[:3]
-        
-        return jsonify(dict(top_3_styles)), 200
+        return jsonify(top_styles), 200
     else:
         return jsonify({"error": "User style data not found"}), 404
 
@@ -494,13 +497,15 @@ def get_mycodi():
         return jsonify(codi_list), 200
     else: return jsonify({"error": "no mycodi"}), 401
 
-@app.route("/codimap/get", methods=["GET"])
+@app.route("/codimap/post", methods=["POST"])
 def get_codimap():
     user_id = session.get("user_id")
+    temp = request.json["temp"]
     
     num = random.sample(range(1, 2000), 10)
     
     styling_lst = Styling.query.filter(Styling.id.in_(num)).all()
+    print(styling_lst)
     
     if len(styling_lst) > 0 :
         codimap_list = []
@@ -514,6 +519,9 @@ def get_codimap():
                 "image_url": styling.image_url,
                 "hashtags": hashtags
             })
+            
+        print(codimap_list)
+        
             
         return jsonify(codimap_list), 200
     else : return jsonify({"error": "no styling list"}), 401
