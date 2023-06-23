@@ -29,52 +29,41 @@ const hourLaterOptions = [
 function MainPage({navigation}) {
   //const [date, setDate] = useState(null);
   //const [hour, setHour] = useState(null);
+  const [cody, setCody] = useState([]);
   const [hourLater, setHourLater] = useState(null);
+  const [isMyCloset, setIsMyCloset] = useState(false);
+  const [isForFuture, setIsForFuture] = useState(false);
 
-  const [defaultCody,setDefaultCody] = useState([
-    {image_url: "https://image.msscdn.net/images/codimap/detail/5873/detail_5873_1_500.jpg?202306192206",
-    hashtag:['hello', 'my', 'name'], title:'크크', subText:"ddddddddddddd"
-    },
-    {image_url: "https://image.msscdn.net/images/codimap/detail/3369/detail_3369_1_500.jpg?202306192206",
-    hashtag:['is', 'se', 'a'], title:'케케', subText:"ddddddddddddd"
-    },
-    {image_url: "https://image.msscdn.net/images/codimap/detail/1937/detail_1937_1_500.jpg?202306192206",
-    hashtag:['h','on','g'], title:'쿠쿠', subText:"ddddddddddddd"
-    }
-  ])
-  const [futureCody, setFutureCody] = useState([
-    {image_url: "https://image.msscdn.net/images/codimap/detail/19546/detail_19546_1_500.jpg?202306192206",
-    hashtag:['aaa', 'bbb', 'ccc'], title:'hihi', subText:"ddddddddddddd"
-    },
-    {image_url: "https://image.msscdn.net/images/codimap/detail/18371/detail_18371_1_500.jpg?202306192206",
-    hashtag:['is', 'se', 'a'], title:'hello', subText:"ddddddddddddd"
-    },
-    {image_url: "https://image.msscdn.net/images/codimap/detail/5105/detail_5105_1_500.jpg?202306192206",
-    hashtag:['h','on','g'], title:'hihi', subText:"ddddddddddddd"
-    }
-  ])
-  const [myClosetCody, setMyClosetCody] = useState([
-    {image_url: "https://image.msscdn.net/images/codimap/detail/5105/detail_5105_1_500.jpg?202306192206",
-    hashtag:['aaa', 'bbb', 'ccc'], title:'kkkeee', subText:"ddddddddddddd"
-    },
-    {image_url: "https://image.msscdn.net/images/codimap/detail/18371/detail_18371_1_500.jpg?202306192206",
-    hashtag:['is', 'se', 'a'], title:'Hi~~', subText:"ddddddddddddd"
-    },
-    {image_url: "https://image.msscdn.net/images/codimap/detail/5105/detail_5105_1_500.jpg?202306192206",
-    hashtag:['h','on','g'], title:'mmmm', subText:"ddddddddddddd"
-    }
-  ])
-  const [myFutureClosetCody, setFutureMyClosetCody] = useState([
-    {image_url: "https://image.msscdn.net/images/codimap/detail/18371/detail_18371_1_500.jpg?202306192206",
-    hashtag:['aaa', 'bbb', 'ccc'], title:'dlsljkd', subText:"ddddddddddddd"
-    },
-    {image_url: "https://image.msscdn.net/images/codimap/detail/18371/detail_18371_1_500.jpg?202306192206",
-    hashtag:['is', 'se', 'a'], title:'dlkdl', subText:"ddddddddddddd"
-    },
-    {image_url: "https://image.msscdn.net/images/codimap/detail/5105/detail_5105_1_500.jpg?202306192206",
-    hashtag:['h','on','g'], title:'안녕', subText:"ddddddddddddd"
-    }
-  ])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let payload = {
+          hour: hourLater,
+          isFuture: isForFuture,
+          isMyCloset: isMyCloset
+        };
+        const response = await fetch('http://localhost:5000/codimap/post', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Success:', data);
+          setCody(data);
+        } else {
+          console.log('Request failed');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+  
+    fetchData();
+  }, [hourLater, isForFuture, isMyCloset]);
   
   // location
   latitude = 37.7858;
@@ -103,8 +92,6 @@ function MainPage({navigation}) {
 
   // 시간 변화량
   const[isDone, setIsDone] = useState(false);
-  const [isMyCloset, setIsMyCloset] = useState(false);
-  const [isForFuture, setIsForFuture] = useState(false);
   const futureDegree = [29, 29, 28, 27, 25, 24, 23, 22]
   return (
     <View style={styles.container}>
@@ -139,11 +126,10 @@ function MainPage({navigation}) {
         <TouchableOpacity onPress={onPressLeft}>
           <Icon name="arrow-left" size={30} color="black" />
         </TouchableOpacity>
-        {isForFuture&&hourLater ? 
-          (isMyCloset ? <RecommendCody cody={myFutureClosetCody[count%3]} />
-            : <RecommendCody cody={futureCody[count%3]} /> )
-          : (isMyCloset ? <RecommendCody cody={myClosetCody[count%3]} /> 
-              : <RecommendCody cody={defaultCody[count%3]} />)}
+        {cody && cody.length > 0 ? (
+    <RecommendCody cody={cody[count % cody.length]} />
+
+  ) : <Text>wrong</Text>}
         <TouchableOpacity onPress={onPressRight}>
           <Icon name="arrow-right" size={30} color="black" />
         </TouchableOpacity>
@@ -152,7 +138,7 @@ function MainPage({navigation}) {
       <View style={{flexDirection : 'row'}}>
         <View style={styles.section}>
           <Checkbox style={styles.checkbox} value={isForFuture} onValueChange={setIsForFuture} color={isForFuture ? '#AFD3E2' : undefined}/>
-          <Text style={styles.paragraph}>미래 코디 확인하기</Text>
+          <Text style={styles.paragraph}>나중에 입을 옷 확인하기</Text>
         </View>
         <View style={styles.section}>
           <Checkbox style={styles.checkbox} value={isMyCloset} onValueChange={setIsMyCloset} color={isMyCloset ? '#AFD3E2' : undefined}/>
