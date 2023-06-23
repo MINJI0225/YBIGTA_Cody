@@ -1,4 +1,4 @@
-import React, { useState, } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Text, FlatList, View, Image, StyleSheet, } from "react-native";
 import Checkbox from 'expo-checkbox';
 // npx expo install expo-checkbox
@@ -8,23 +8,37 @@ const CodySet = props => {
     const {cody} = props;
     const [isSelected, setIsSelected] = useState(true);
 
-    const fetchLike = async() => {
-      
-    }
-
-    const fetchData = async () => {
-      const likeData = {
-        styling_id: cody.id,
+    useEffect(() => {
+      const fetchLike = async () => {
+        try {
+          const like = {
+            styling_id : cody.id
+          };
+          const response = await fetch('http://localhost:5000/mycodi/post', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(like)
+          });
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              console.log(data.message);
+            } else {
+              console.log("Like Request failed:", data.message);
+            }
+          } else {
+            console.log('Like Request failed with status code:', response.status);
+            const errorData = await response.json();
+            console.error('Error:', errorData);
+          }
+        } catch (error) {
+          console.error('Error: ', error);
+        }
       };
-      try {
-        const response = await fetch('http://localhost:5000/mycodi/post');
-        const data = await response.json();
-        setIsSelected(data)
-        console.log('Success:', data);
-      } catch (error) {
-        console.log('Error:', error);
-      }
-    };
+      fetchLike();
+    }, [isSelected]);
 
     return (
         <View style={{alignItems:'center'}}>

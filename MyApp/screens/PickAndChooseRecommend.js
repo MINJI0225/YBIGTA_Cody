@@ -4,18 +4,8 @@ import { StyleSheet, View, Text, TouchableOpacity} from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import RecommendCody from '../components/RecommendCody.js';
 
-function PickAndChooseRecommend({navigation}) {
-  const [defaultCody,setDefaultCody] = useState([
-    {image_url: "https://image.msscdn.net/images/codimap/detail/5873/detail_5873_1_500.jpg?202306192206",
-    hashtag:['hello', 'my', 'name'], title:'크크', subText:"ddddddddddddd"
-    },
-    {image_url: "https://image.msscdn.net/images/codimap/detail/3369/detail_3369_1_500.jpg?202306192206",
-    hashtag:['is', 'se', 'a'], title:'케케', subText:"ddddddddddddd"
-    },
-    {image_url: "https://image.msscdn.net/images/codimap/detail/1937/detail_1937_1_500.jpg?202306192206",
-    hashtag:['h','on','g'], title:'쿠쿠', subText:"ddddddddddddd"
-    }
-  ])
+function PickAndChooseRecommend({navigation, route}) {
+  const {data} = route.params;
 
   const [count, setCount] = useState(0);
   const onPressRight = () => {
@@ -30,7 +20,7 @@ function PickAndChooseRecommend({navigation}) {
             <TouchableOpacity onPress={onPressLeft}>
               <Icon name="arrow-left" size={30} color="black" />
             </TouchableOpacity>
-            <RecommendCody cody={defaultCody[count%3]} />
+            <RecommendCody cody={data[count%3]} />
             <TouchableOpacity onPress={onPressRight}>
               <Icon name="arrow-right" size={30} color="black" />
             </TouchableOpacity>

@@ -1,10 +1,18 @@
 import React from 'react';
 import { Image, StyleSheet, View, Text } from 'react-native';
 import SaveButton from '../components/SaveButton';
+import BarGraph from '../components/BarGraph';
+import Separator from '../components/Separator';
 
 function StyleIcon({ navigation, route }) {
   const { data } = route.params;
   console.log(data);
+
+  const dataList= [
+    {title: data.style1, percentage:Math.round(data.pre1*100)/100},
+    {title: data.style2, percentage:Math.round(data.pre2*100)/100},
+    {title: data.style3, percentage:Math.round(data.pre3*100)/100}
+  ]
 
   const findHighestScoringStyle = (data) => {
     let highestScore = -Infinity;
@@ -46,6 +54,9 @@ function StyleIcon({ navigation, route }) {
       <View style={styles.contentContainer}>
         <Text style={styles.headerText}>{highestScoringStyle}</Text>
         <Image source={styleImageMap[highestScoringStyle]} style={styles.image} />
+        <Separator />
+        <BarGraph data={dataList} />
+        <Separator />
         <SaveButton title='코디 추천 받으러 가기' onPress={() => navigation.navigate('TabNavigation')} />
       </View>
     </View>
@@ -64,7 +75,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 20,
     alignItems: 'center',

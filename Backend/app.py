@@ -355,26 +355,19 @@ def post_closet():
 @app.route("/mycodi/post", methods=["POST"])
 def post_mycodi():
     user_id = session.get("user_id")
-    styling_id = request.json("codimap")
+    styling_id = request.json["styling_id"]
 
     mycodi_exists = MyCodi.query.filter_by(user_id=user_id, styling_id=styling_id).first() is not None
 
     if mycodi_exists:
         db.session.delete(mycodi_exists)
         db.session.commit()
-        
-        return False
+        return jsonify({"success": True, "message": "Successfully modified mycodi"}), 200
 
     new_mycodi = MyCodi(user_id=user_id, styling_id=styling_id)
     db.session.add(new_mycodi)
     db.session.commit()
-
-    return_value = jsonify({
-        "user_id": new_mycodi.user_id,
-        "styling_id": new_mycodi.styling_id
-    })
-    
-    return True
+    return jsonify({"success": True, "message": "Successfully created mycodi"}), 200
 
 @app.route("/image/upload", methods=["POST"])
 def image_upload():
