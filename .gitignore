@@ -12,3 +12,6 @@ Backend/instance/db.sqlite
 
 # Ignore dump.rdb
 dump.rdb
+
+# .expo
+/Backend/.expo
