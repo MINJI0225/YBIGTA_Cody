@@ -9,3 +9,6 @@ Modeling/FashionModel/checkpoints/*
 
 # Ignore Backend/instance/db.sqlite
 Backend/instance/db.sqlite
+
+# Ignore dump.rdb
+dump.rdb
