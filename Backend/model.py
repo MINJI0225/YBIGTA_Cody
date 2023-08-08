@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from uuid import uuid4
 
 db = SQLAlchemy()
+print("DB init")
 
 def get_uuid():
     return uuid4().hex
@@ -11,7 +12,13 @@ class User(db.Model):
     id = db.Column(db.String(32), primary_key=True, unique=True, default=get_uuid)
     email = db.Column(db.String(345), unique=True)
     password = db.Column(db.Text, nullable=False)
+    
+class Hashtag(db.Model):
+    __tablename__ = "hashtag"
+    id = db.Column(db.Integer, primary_key=True)
+    tag = db.Column(db.String(255))
 
+# Create association table to connect user and hashtag
 styling_hashtags = db.Table('styling_hashtags',
                             db.Column('styling_id', db.Integer, db.ForeignKey('styling.id'), primary_key=True),
                             db.Column('hashtag_id', db.Integer, db.ForeignKey('hashtag.id'), primary_key=True)
@@ -20,6 +27,11 @@ styling_hashtags = db.Table('styling_hashtags',
 item_styling = db.Table('item_styling',
                             db.Column('styling_id', db.Integer, db.ForeignKey('styling.id'), primary_key=True),
                             db.Column('item_id', db.Integer, db.ForeignKey('item.id'), primary_key=True)
+                        )
+
+item_hashtags = db.Table('item_hashtags',
+                         db.Column('item_id', db.Integer, db.ForeignKey('item.id'), primary_key=True),
+                         db.Column('hashtag_id', db.Integer, db.ForeignKey('hashtag.id'), primary_key=True)
                         )
 
 class Styling(db.Model):
@@ -31,8 +43,11 @@ class Styling(db.Model):
     styling_txt = db.Column(db.Text)
     image_url = db.Column(db.String(255))
     style_tag = db.Column(db.String(255))
+    items = db.relationship('Item', secondary='item_styling', lazy='subquery',
+                            backref=db.backref('stylings', lazy=True))
     clo = db.Column(db.Float)
-    hashtags = db.relationship('Hashtag', secondary=styling_hashtags, backref='styling', lazy='subquery')
+    styling_hashtags = db.relationship('Hashtag', secondary='styling_hashtags', lazy='subquery',
+                                       backref=db.backref('stylings', lazy=True))
 
 
 class Item(db.Model):
@@ -52,6 +67,8 @@ class Item(db.Model):
     avg_color_whole_g = db.Column(db.Float)
     avg_color_whole_b = db.Column(db.Float)
     styling_id = db.relationship('Styling', secondary=item_styling, backref='styling', lazy='subquery')
+    item_hashtags = db.relationship('Hashtag', secondary='item_hashtags', lazy='subquery',
+                                    backref=db.backref('items', lazy=True))
 
 
 class Codybti(db.Model):
@@ -94,11 +111,6 @@ class MyCodi(db.Model):
     __tablename__ = "myCodi"
     user_id = db.Column(db.String(32), primary_key=True, unique=True, default=get_uuid)
     styling_id = db.Column(db.Integer)
-
-class Hashtag(db.Model):
-    __tablename__ = "hashtag"
-    id = db.Column(db.Integer, primary_key=True)
-    tag = db.Column(db.String(255))
 
 '''
 class Like(db.Model):
