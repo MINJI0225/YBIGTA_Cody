@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity } from 'react-native';
-const ImageButton = ({ src, onImagePress }) => {
+const ImageButton = ({ imageKey, src, onImagePress }) => {
   const [isClicked, setIsClicked] = useState(false);
   const handleImagePress = () => {
+    // console.log('key:', imageKey);
     setIsClicked(!isClicked);
-    onImagePress(src, !isClicked);
+    onImagePress(imageKey, !isClicked);
   };
   return (
     <TouchableOpacity onPress={handleImagePress}>
