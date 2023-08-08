@@ -5,43 +5,31 @@ import SaveButton from '../components/SaveButton';
 
 function Mycloset_setting({ navigation }) {
   const [selectedImages, setSelectedImages] = useState([]);
-  const [result, setResult] = useState({});
 
-  const handleImagePress = (image, isSelected) => {
+  const handleImagePress = (imageKey, isSelected) => {
     if (isSelected) {
-      setSelectedImages([...selectedImages, image]);
+      setSelectedImages(prev => [...prev, imageKey]);
+      console.log('isSelected - selectedImages', selectedImages);
     } else {
-      setSelectedImages(selectedImages.filter((selectedImage) => selectedImage !== image));
+      setSelectedImages(prev => prev.filter(key => key !== imageKey));
+      console.log('!isSelected - selectedImages', selectedImages);
     }
   };
 
-  const ClothImageMap = {
-    19: 'half_knit',
-    20: 'white_tshirt',
-    21: 'black_skirt',
-    22: 'cardigan',
-    23: 'blue_jean',
-    24: 'white_cottonp',
-    25: 'black_slacks',
-    26: 'half_jean',
-    27: 'black_tshirt',
-    28: 'beige_slacks',
-    29: 'sky_jean',
-    30: 'long_knit',
-    31: 'white_shirt',
-    32: 'black_shirt',
-    33: 'white_skirt',
-  };
-
   useEffect(() => {
-    const updatedResult = {};
-    Object.keys(ClothImageMap).forEach((key) => {
-      updatedResult[ClothImageMap[key]] = selectedImages.includes(parseInt(key)) ? 1 : 0;
-    });
-    setResult(updatedResult);
+    console.log('selectedImages:', selectedImages);
   }, [selectedImages]);
 
+
   const handleSave = () => {
+    const result = {};
+
+    urlList.forEach(({ key }) => {
+      result[key] = selectedImages.includes(key) ? 1 : 0;
+    });
+
+    console.log('result:', result);
+    
     fetch('http://localhost:5000/mycloset/post', {
       method: 'POST',
       headers: {
@@ -56,26 +44,26 @@ function Mycloset_setting({ navigation }) {
       .catch(error => {
         console.error('Error:', error);
       });
-      navigation.navigate('Mycloset_pickandchoose', { selectedImages });
+      navigation.navigate('Mycloset_main');
     // Rest of your save logic
   };
 
   const urlList = [
-    { image_url: require('../assets/mycloset/black_knit.jpg') },
-    { image_url: require('../assets/mycloset/white_tshirt.jpg') },
-    { image_url: require('../assets/mycloset/black_long_skirt.jpg') },
-    { image_url: require('../assets/mycloset/cardigan.jpg') },
-    { image_url: require('../assets/mycloset/dark_denim_pants.jpg') },
-    { image_url: require('../assets/mycloset/white_pants.jpg') },
-    { image_url: require('../assets/mycloset/black_slacks.jpg') },
-    { image_url: require('../assets/mycloset/short_denim_pants.jpg') },
-    { image_url: require('../assets/mycloset/black_tshirt.jpg') },
-    { image_url: require('../assets/mycloset/beige_slacks.jpg') },
-    { image_url: require('../assets/mycloset/light_denim_pants.jpg') },
-    { image_url: require('../assets/mycloset/long_sleeve_knit.jpg') },
-    { image_url: require('../assets/mycloset/white_shirt.jpg') },
-    { image_url: require('../assets/mycloset/black_shirt.jpg') },
-    { image_url: require('../assets/mycloset/white_short_skirt.png') },
+    { key: 'half_knit', image_url: require('../assets/mycloset/black_knit.jpg') },
+    { key: 'white_tshirt', image_url: require('../assets/mycloset/white_tshirt.jpg') },
+    { key: 'black_skirt', image_url: require('../assets/mycloset/black_long_skirt.jpg') },
+    { key: 'cardigan', image_url: require('../assets/mycloset/cardigan.jpg') },
+    { key: 'blue_jean', image_url: require('../assets/mycloset/dark_denim_pants.jpg') },
+    { key: 'white_cottonp', image_url: require('../assets/mycloset/white_pants.jpg') },
+    { key: 'black_slacks', image_url: require('../assets/mycloset/black_slacks.jpg') },
+    { key: 'half_jean', image_url: require('../assets/mycloset/short_denim_pants.jpg') },
+    { key: 'black_tshirt', image_url: require('../assets/mycloset/black_tshirt.jpg') },
+    { key: 'beige_slacks', image_url: require('../assets/mycloset/beige_slacks.jpg') },
+    { key: 'sky_jean', image_url: require('../assets/mycloset/light_denim_pants.jpg') },
+    { key: 'long_knit', image_url: require('../assets/mycloset/long_sleeve_knit.jpg') },
+    { key: 'white_shirt', image_url: require('../assets/mycloset/white_shirt.jpg') },
+    { key: 'black_shirt', image_url: require('../assets/mycloset/black_shirt.jpg') },
+    { key: 'white_skirt', image_url: require('../assets/mycloset/white_short_skirt.png') },
     // Rest of the image URLs
   ];
 
@@ -86,7 +74,7 @@ function Mycloset_setting({ navigation }) {
           data={urlList}
           numColumns={3}
           renderItem={({ item }) => (
-            <ImageButton src={item.image_url} onImagePress={handleImagePress} />
+            <ImageButton src={item.image_url} imageKey={item.key} onImagePress={handleImagePress} />
           )}
         />
       </View>

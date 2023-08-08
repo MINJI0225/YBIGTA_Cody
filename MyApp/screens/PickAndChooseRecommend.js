@@ -6,6 +6,7 @@ import RecommendCody from '../components/RecommendCody.js';
 
 function PickAndChooseRecommend({navigation, route}) {
   const {data} = route.params;
+  console.log("PickAndChooseRecommend data: ", data);
 
   const [count, setCount] = useState(0);
   const onPressRight = () => {

@@ -3,6 +3,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { StyleSheet, Image, View, FlatList, Alert } from 'react-native';
 import ImageSelectButton from '../components/ImageSelectButton.js';
 import SaveButton from '../components/SaveButton.js';
+import { Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 function MyStyle({navigation}) {
@@ -45,6 +47,7 @@ function MyStyle({navigation}) {
     });
 
     try {
+      navigation.navigate('LoadingScreen');
       const response = await fetch('http://localhost:5000/image/upload', { //여기 수정해야함
         method: 'POST',
         headers: {
@@ -55,14 +58,24 @@ function MyStyle({navigation}) {
 
       if (response.ok) {
         console.log('이미지 업로드 성공');
-        navigation.navigate('LoadingScreen');
       } else {
         console.log('이미지 업로드 실패');
       }
     } catch (error) {
       console.log('Error:', error);
     }
-  navigation.navigate('LoadingScreen')
+
+    try {
+      const response = await fetch('http://localhost:5000/userStyle/get');
+      if (response.ok) {
+        console.log('Model response success');
+        const data = await response.json();
+        console.log(data);
+        navigation.navigate('StyleIcon', { data });
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
   };
 
   return (
