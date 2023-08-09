@@ -1,7 +1,9 @@
 # CodifyMe
 
+## TODO
+1. Dockerize the Flask server
+2. Run Flask server on independent host machine (using ngrok)
 ## Getting Started
-API documentation 추가했으니 프론트 구현시 필요한 부분 작성해주시면 됩니다.
 ### Prerequisites
 아래의 dependency를 모두 설치해야 합니다. (아래 링크 참고)
 
@@ -22,21 +24,27 @@ https://velog.io/@jisoolee11/%EC%95%B1-%EA%B0%9C%EB%B0%9C-%EC%A4%80%EB%B9%84-Rea
 git clone https://github.com/username/repo.git
 ```
 
-2. Navigate to the `Backend` directory and start the Flask server:
+2. Download model checkpoint
+
+```sh
+./download.sh
+```
+
+3. Navigate to the `Backend` directory and start the Flask server:
 
 ```sh
 cd Backend
 flask run
 ```
 
-3. Open a new terminal window, navigate to the `MyApp` directory, and install Node.js dependencies:
+4. Open a new terminal window, navigate to the `MyApp` directory, and install Node.js dependencies:
 
 ```sh
 cd ../MyApp
-npm install
+npm install --force
 ```
 
-4. Start the application with CLI:
+5. Start the application with CLI:
 
 ```sh
 expo start
@@ -49,21 +57,38 @@ expo start
 .
 ├── Backend
 │   ├── __pycache__
-│   └── app.py
+│   ├── app.py
+│   ├── files
+│   ├── instance
+│   ├── clo.csv
+│   ├── codimap_list.json
+│   ├── config.py
+│   ├── model_wrapper.py
+│   ├── model.py
+│   └── utils.py
 ├── Crawling
 │   ├── README.md
 │   ├── crawling.py
 │   ├── requirements.txt
-│   └── utils.py
-└── MyApp
-    ├── App.js
-    ├── app.json
-    ├── assets
-    ├── babel.config.js
-    ├── components
-    ├── node_modules
-    ├── package-lock.json
-    ├── package.json
-    └── screens
+│   ├── utils.py
+│   └── run.sh
+├── Modeling
+│   ├── FashionModel
+│   └── clo.json
+├── MyApp
+│   ├── App.js
+│   ├── app.json
+│   ├── assets
+│   ├── babel.config.js
+│   ├── components
+│   ├── node_modules
+│   ├── package-lock.json
+│   ├── package.json
+│   └── screens
+├── API.md
+├── .gitignore
+├── download.sh
+└── README.md
+
 ```
 
