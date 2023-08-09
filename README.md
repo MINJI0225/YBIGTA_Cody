@@ -1,6 +1,7 @@
 # CodifyMe
 
-## TODO
+## Last Update (August 10, 2023)
+### TODO
 1. Dockerize the Flask server
 2. Run Flask server on independent host machine (using ngrok)
 ## Getting Started
