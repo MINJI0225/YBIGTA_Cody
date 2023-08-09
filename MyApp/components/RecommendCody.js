@@ -14,6 +14,7 @@ const CodySet = props => {
           const like = {
             styling_id : cody.id
           };
+          console.log('like:', like)
           const response = await fetch('http://localhost:5000/mycodi/post', {
             method: 'POST',
             headers: {

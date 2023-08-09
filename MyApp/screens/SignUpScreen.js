@@ -32,7 +32,12 @@ function SignUpScreen({ navigation }) {
           body: JSON.stringify(userData),
         })
         
-        .then(response => response.json())
+        .then(response => {
+          // Print the status and ok property of the response object
+          console.log('Response status:', response.status);
+          console.log('Response ok:', response.ok);
+          return response.json();
+        })
         .then(data => {
           if (data.error) {
             // Handle error (e.g., user already exists)
@@ -69,6 +74,7 @@ function SignUpScreen({ navigation }) {
             onChangeText={setId}
             value={userId}
             autoCapitalize='none'
+            placeholderTextColor="#D9D9D9"
           />
           <View style={styles.textContainer}>
           <Text
@@ -81,6 +87,7 @@ function SignUpScreen({ navigation }) {
             onChangeText={setPassword1}
             value={password1}
             autoCapitalize='none'
+            placeholderTextColor="#D9D9D9"
           />
           <TextInput
             style={styles.textInput}
@@ -88,6 +95,7 @@ function SignUpScreen({ navigation }) {
             onChangeText={setPassword2}
             value={password2}
             autoCapitalize='none'
+            placeholderTextColor="#D9D9D9"
           />
           <View style={styles.textContainer}>
           <Text
@@ -100,6 +108,7 @@ function SignUpScreen({ navigation }) {
             onChangeText={setEmail}
             value={email}
             autoCapitalize='none'
+            placeholderTextColor="#D9D9D9"
           />
         <View style={styles.buttonContainer}>
           <SaveButton 
@@ -152,7 +161,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     marginBottom: 5,
     paddingLeft: 10,
-    placeholderTextColor: '#D9D9D9'
   },
   buttonContainer: {
     justifyContent: 'center',

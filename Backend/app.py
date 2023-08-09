@@ -6,7 +6,8 @@ from config import ApplicationConfig
 from utils import process_imagefiles, predict, index_to_category, indices_of_top_n
 from utils import calculate_color_difference
 from model import db, User, Styling, Codybti, UserStyle, MyCloset, MyCodi, Hashtag, Item
-import random
+import random, math
+from datetime import datetime
 import torch
 from model_wrapper import PlainEfficientnetB7
 from sqlalchemy.orm import joinedload
@@ -29,6 +30,69 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+    
+    # DB initialization
+    with open('codimap_list.json') as json_file:
+        data = json.load(json_file)
+        for styling in data[:100]:
+            styling_data = Styling(
+                title=styling['title'],
+                styling_date=datetime.strptime(styling['styling_date'], '%Y.%m.%d').date(),
+                view_num=styling['view_num'],
+                styling_txt=styling['styling_txt'],
+                image_url=styling['image_url'],
+                style_tag=styling['style_tag']
+            )
+            db.session.add(styling_data)
+            db.session.flush()
+
+            for item in styling['item_list']:
+                item_data = Item.query.filter_by(title=item['title']).first()
+                if not item_data:
+                    avg_color_top = item.get('avg_color_top', [])
+                    avg_color_bottom = item.get('avg_color_bottom', [])
+                    avg_color_whole = item.get('avg_color_whole', [])
+                    item_data = Item(
+                        title=item['title'],
+                        big_category=item['big_category'],
+                        small_category=item['small_category'],
+                        image_url=item['image_url'],
+                        avg_color_top_r=avg_color_top[0] if avg_color_top and not math.isnan(avg_color_top[0]) else None,
+                        avg_color_top_g=avg_color_top[1] if avg_color_top and not math.isnan(avg_color_top[1]) else None,
+                        avg_color_top_b=avg_color_top[2] if avg_color_top and not math.isnan(avg_color_top[2]) else None,
+                        avg_color_bottom_r=avg_color_bottom[0] if avg_color_bottom and not math.isnan(avg_color_bottom[0]) else None,
+                        avg_color_bottom_g=avg_color_bottom[1] if avg_color_bottom and not math.isnan(avg_color_bottom[1]) else None,
+                        avg_color_bottom_b=avg_color_bottom[2] if avg_color_bottom and not math.isnan(avg_color_bottom[2]) else None,
+                        avg_color_whole_r=avg_color_whole[0] if avg_color_whole and not math.isnan(avg_color_whole[0]) else None,
+                        avg_color_whole_g=avg_color_whole[1] if avg_color_whole and not math.isnan(avg_color_whole[1]) else None,
+                        avg_color_whole_b=avg_color_whole[2] if avg_color_whole and not math.isnan(avg_color_whole[2]) else None
+                    )
+                    db.session.add(item_data)
+                    db.session.flush()
+                    
+                styling_data.items.append(item_data)
+                for hashtag in item['item_hashtags']:
+                    hashtag_data = Hashtag.query.filter_by(tag=hashtag).first()
+                    if not hashtag_data:
+                        hashtag_data = Hashtag(tag=hashtag)
+                        db.session.add(hashtag_data)
+                        db.session.flush()
+                    item_data.item_hashtags.append(hashtag_data)
+            for hashtag in styling['hashtags']:
+                hashtag_data = Hashtag.query.filter_by(tag=hashtag).first()
+                if not hashtag_data:
+                    hashtag_data = Hashtag(tag=hashtag)
+                    db.session.add(hashtag_data)
+                    db.session.flush()
+                styling_data.styling_hashtags.append(hashtag_data)
+        # Commit changes to the database
+        db.session.commit()
+
+city = "Seoul"
+apikey="97abddef06b1f625921e7b5ca2e6695c"
+lang = "kr"
+api = f"https://api.openweathermap.org/data/3.0/onecall?lat=37.53&lon=127.02&appid={apikey}"
+# api = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apikey}"
 
 @app.route('/api/saveData', methods=['POST'])
 def handle_post():
@@ -73,6 +137,7 @@ def register_user():
 
     hashed_password = bcrypt.generate_password_hash(password)
     new_user = User(id=id, email=email, password=hashed_password)
+
     db.session.add(new_user)
     db.session.commit()
     
@@ -139,6 +204,7 @@ def post_cbti():
 #MyCloset POST
 @app.route("/mycloset/post", methods=["POST"])
 def post_closet():
+    # breakpoint()
     user_id = session.get("user_id")
     white_tshirt = request.json["white_tshirt"]
     black_tshirt = request.json["black_tshirt"]
@@ -229,25 +295,30 @@ def choice_codi():
         "white_tshirt" : "반소매 티셔츠", "black_tshirt" : "반소매 티셔츠", "white_shirt" : "셔츠/블라우스",
         "black_shirt" : "셔츠/블라우스", "half_knit" : "니트/스웨터", "long_knit" : "니트/스웨터",
         "cardigan" : "카디건", "black_slacks" : "슈트 팬츠/슬랙스", "beige_slacks" : "슈트 팬츠/슬랙스",
-        "sky_jean" : "데님 팬츠", "blue_jean" : "데님 팬츠", "white_cotton" : "코튼 팬츠",
+        "sky_jean" : "데님 팬츠", "blue_jean" : "데님 팬츠", "white_cottonp" : "코튼 팬츠",
         "half_jean" : "숏 팬츠", "white_skirt" : "미니스커트", "black_skirt" : "롱스커트"
     }
 
     color_mappings = {
         "white_tshirt" : (243, 244, 239), "black_tshirt" : (31, 32, 36), "white_shirt" : (243, 244, 239),
-        "black_shirt" : (31, 32, 36), "half_knit" : (243, 244, 239), "long_knit" : (220, 211, 200),
+        "black_shirt" : (31, 32, 36), "half_knit" : (31, 32, 36), "long_knit" : (220, 211, 200),
         "cardigan" : (227, 223, 211), "black_slacks" : (31, 32, 36), "beige_slacks" : (190, 185, 173),
-        "sky_jean" : (155, 162, 178), "blue_jean" : (43, 48, 70), "white_cotton" : (242, 243, 247),
+        "sky_jean" : (155, 162, 178), "blue_jean" : (43, 48, 70), "white_cottonp" : (242, 243, 247),
         "half_jean" : (138, 160, 186), "white_skirt" : (243, 244, 239), "black_skirt" : (33, 28, 34)
     }
 
     # When user select the item, the item is posted to the server
     # and the server will return the codi that matches the item
+    print("Request to mycloset/choice: ", request.json)
     selected_category = item_mappings[request.json["selected_item"]]
     selected_color = color_mappings[request.json["selected_item"]]
     items = Item.query.filter(Item.small_category == selected_category).all()
+    print("selected_category: ", selected_category)
+    print("selected_color: ", selected_color)
+    print("Length of items: ", len(items))
 
     item_recommendations = []
+    color_diff_items = []
     for item in items:
         if selected_category in ["반소매 티셔츠", "셔츠/블라우스", "니트/스웨터", "카디건"]:
             item_color = (item.avg_color_top_r, item.avg_color_top_g, item.avg_color_top_b)
@@ -260,8 +331,14 @@ def choice_codi():
         if None in item_color:
             continue
 
-        if calculate_color_difference(selected_color, item_color) < 10:
-            item_recommendations.append(item)
+        color_difference = calculate_color_difference(selected_color, item_color)
+        color_diff_items.append((color_difference, item))
+    
+    # Sorting items by color difference in ascending order
+    sorted_items = sorted(color_diff_items, key=lambda x: x[0])
+    item_recommendations = [item[1] for item in sorted_items[:20]]
+    
+    print("Length of item_recommendations (color applied): ", len(item_recommendations))
     
     # Get Stylings using styings_id
     styling_lst = []
@@ -270,7 +347,7 @@ def choice_codi():
 
     codimap_list = []
     for styling in styling_lst:
-        hashtags = [hashtag.tag for hashtag in styling.hashtags]
+        hashtags = [hashtag.tag for hashtag in styling.styling_hashtags]
         
         codimap_list.append({
             "id": styling.id,
@@ -280,6 +357,7 @@ def choice_codi():
             "hashtags": hashtags
         })
     
+    print("mycloset/choice response: ", codimap_list)
     return jsonify(codimap_list), 200
 
 
@@ -288,7 +366,9 @@ def post_mycodi():
     user_id = session.get("user_id")
     styling_id = request.json["styling_id"]
 
-    mycodi_exists = MyCodi.query.filter_by(user_id=user_id, styling_id=styling_id).first() is not None
+    print("user_id, styling_id: ", user_id, styling_id)
+
+    mycodi_exists = MyCodi.query.filter_by(user_id=user_id).first()
 
     if mycodi_exists:
         db.session.delete(mycodi_exists)
@@ -427,7 +507,6 @@ def get_codimap():
     # 2. User style tag
     # 3. User trendy
 
-    hour_temp_table = [30, 29, 28, 28, 26, 25, 25, 24, 24, 23, 23, 23]
     trend_table = {
         '아주 민감':5,
         '민감':4,
@@ -438,11 +517,19 @@ def get_codimap():
     user_id = session.get("user_id")
     if not user_id:
         user_id = "aa"
-    
+
     hour = request.json["hour"]
-    isCloset = request.json["isCloset"]
+    if hour is None:
+        hour = 0
+    
+    isCloset = request.json["isMyCloset"]
     isCloset = True if isCloset == 1 else False
-    temp = hour_temp_table[hour]
+    # breakpoint()
+    # (TODO) Get temperature using weather API
+    # result = requests.get(api)
+    # data = json.loads(result.text)
+    # breakpoint()  
+    temp = 37.5
 
     # Get user style tag
     codybti = Codybti.query.filter_by(user_id=user_id).first()
@@ -479,7 +566,7 @@ def get_codimap():
 
     codimap_list = []
     for styling in result_list:
-        hashtags = [hashtag.tag for hashtag in styling.hashtags]
+        hashtags = [hashtag.tag for hashtag in styling.styling_hashtags]
         
         codimap_list.append({
             "id": styling.id,
@@ -489,5 +576,7 @@ def get_codimap():
             "hashtags": hashtags
         })
 
+    # Shuffle the list
+    random.shuffle(codimap_list)
 
     return jsonify(codimap_list), 200

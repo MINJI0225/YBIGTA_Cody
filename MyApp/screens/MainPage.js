@@ -55,7 +55,7 @@ function MainPage({navigation}) {
           console.log('Success:', data);
           setCody(data);
         } else {
-          console.log('Request failed');
+          console.log('Request failed in MainPage.js, while fetching cody');
         }
       } catch (error) {
         console.error('Error:', error);
