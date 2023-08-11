@@ -6,6 +6,7 @@ import WeatherComponent from '../components/WeatherComponent';
 import RNPickerSelect from 'react-native-picker-select';
 import Checkbox from 'expo-checkbox';
 import Separator from "../components/Separator";
+import { API_URL } from '@env';
 
 const Picker = ({ label, value, onValueChange, items }) => (
   <View style={styles.pickerContainer}>
@@ -42,7 +43,7 @@ function MainPage({navigation}) {
           isFuture: isForFuture,
           isMyCloset: isMyCloset
         };
-        const response = await fetch('http://localhost:5000/codimap/post', {
+        const response = await fetch(`${API_URL}/codimap/post`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
