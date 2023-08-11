@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
 import ImageButton from '../components/ImageButton';
 import SaveButton from '../components/SaveButton';
+import { API_URL } from '@env';
 
 function Mycloset_setting({ navigation }) {
   const [selectedImages, setSelectedImages] = useState([]);
@@ -30,7 +31,7 @@ function Mycloset_setting({ navigation }) {
 
     console.log('result:', result);
     
-    fetch('http://localhost:5000/mycloset/post', {
+    fetch(`${API_URL}/mycloset/post`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

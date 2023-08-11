@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput } from 'react-native';
 import SaveButton from '../components/SaveButton.js';
+import { API_URL } from '@env';
 
 
 function SignUpScreen({ navigation }) {
@@ -24,7 +25,8 @@ function SignUpScreen({ navigation }) {
         };
   
         // Send data to server
-        fetch('http://localhost:5000/register', {
+        console.log(`${API_URL}/register`);
+        fetch(`${API_URL}/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

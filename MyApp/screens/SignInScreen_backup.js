@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native';
 import SaveButton from '../components/SaveButton.js';
+import { API_URL } from '@env';
 
 
 function SignInScreen({ navigation }) {
@@ -22,7 +23,7 @@ function SignInScreen({ navigation }) {
       };
 
       // Send data to server
-      fetch('http://localhost:5000/api/saveUser', {
+      fetch(`${API_URL}/api/saveUser`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

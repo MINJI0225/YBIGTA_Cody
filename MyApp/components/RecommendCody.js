@@ -1,6 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import { Text, FlatList, View, Image, StyleSheet, } from "react-native";
 import Checkbox from 'expo-checkbox';
+import { API_URL } from '@env';
 // npx expo install expo-checkbox
 // https://docs.expo.dev/versions/latest/sdk/checkbox/
 
@@ -15,7 +16,7 @@ const CodySet = props => {
             styling_id : cody.id
           };
           console.log('like:', like)
-          const response = await fetch('http://localhost:5000/mycodi/post', {
+          const response = await fetch(`${API_URL}/mycodi/post`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

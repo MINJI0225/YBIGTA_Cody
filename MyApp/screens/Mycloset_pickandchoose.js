@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, ScrollView, Alert } from 'react-native';
 import ImageButton from '../components/ImageButton';
 import SaveButton from '../components/SaveButton';
+import { API_URL } from '@env';
 
 function Mycloset_pickandchoose({ navigation}) {
   const [selectedClothes, setSelectedClothes] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:5000/mycloset/get')
+    fetch(`${API_URL}/mycloset/get`)
       .then(response => response.json())
       .then(data => {
         console.log('Success fetching selected clothes:', data);
@@ -45,7 +46,7 @@ function Mycloset_pickandchoose({ navigation}) {
       let input = { selected_item: selectedItem.key };
   
       try {
-        const response = await fetch('http://localhost:5000/mycloset/choice', {
+        const response = await fetch(`${API_URL}/mycloset/choice`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

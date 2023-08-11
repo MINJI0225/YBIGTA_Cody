@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import SaveButton from '../components/SaveButton.js';
+import { API_URL } from '@env';
 
 const Picker = ({ label, value, onValueChange, items }) => (
   <View style={styles.pickerContainer}>
@@ -60,7 +61,7 @@ function Cody_BTI({ navigation }) {
       };
 
       // Send data to server
-      fetch('http://localhost:5000/cbti/post', {
+      fetch(`${API_URL}/cbti/post`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

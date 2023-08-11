@@ -5,6 +5,7 @@ import ImageSelectButton from '../components/ImageSelectButton.js';
 import SaveButton from '../components/SaveButton.js';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { API_URL } from '@env';
 
 
 function MyStyle({navigation}) {
@@ -48,7 +49,7 @@ function MyStyle({navigation}) {
 
     try {
       navigation.navigate('LoadingScreen');
-      const response = await fetch('http://localhost:5000/image/upload', { //여기 수정해야함
+      const response = await fetch(`${API_URL}/image/upload`, { //여기 수정해야함
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -66,7 +67,7 @@ function MyStyle({navigation}) {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/userStyle/get');
+      const response = await fetch(`${API_URL}/userStyle/get`);
       if (response.ok) {
         console.log('Model response success');
         const data = await response.json();
