@@ -1,0 +1,11 @@
+flask
+flask_bcrypt
+flask_cors
+flask_session
+dotenv
+python-dotenv
+redis
+flask_sqlalchemy
+efficientnet_pytorch
+opencv-python
+pandas

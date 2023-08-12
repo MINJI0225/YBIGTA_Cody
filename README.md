@@ -1,6 +1,9 @@
 # CodifyMe
 
-## Last Update (August 10, 2023)
+## Last Update (August 12, 2023)
+> Expo run modified (Refer to the [How to run](#how-to-run) section)
+
+> Included [README.md](./Backend/README.md) for running Backend server
 ### TODO
 1. Dockerize the Flask server
 2. Run Flask server on independent host machine (using ngrok)
@@ -48,7 +51,11 @@ npm install --force
 5. Start the application with CLI:
 
 ```sh
-expo start
+./run.sh dev # When using localhost
+```
+or
+```sh
+./run.sh prod # When using remote ngrok server
 ```
 
 
