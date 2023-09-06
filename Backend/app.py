@@ -1,18 +1,16 @@
+import random, requests, pytz
+import torch
 from flask import Flask, request, jsonify, session
 from flask_bcrypt import Bcrypt
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from flask_session import Session
-from config import ApplicationConfig
-from utils import process_imagefiles, predict, index_to_category, indices_of_top_n
-from utils import calculate_color_difference
-from model import db, User, Styling, Codybti, UserStyle, MyCloset, MyCodi, Hashtag, Item
-import random, math
-from datetime import datetime
-import torch
-from model_wrapper import PlainEfficientnetB7
-from sqlalchemy.orm import joinedload
 from sqlalchemy import func
-import json, requests
+from db_init import db_init
+from config import ApplicationConfig
+from utils import process_imagefiles, predict, index_to_category, indices_of_top_n, calculate_color_difference
+from model import db, User, Styling, Codybti, UserStyle, MyCloset, MyCodi, Item
+from model_wrapper import PlainEfficientnetB7
+from datetime import datetime, timedelta
 
 # Load the model
 model = PlainEfficientnetB7(num_classes=12)
@@ -28,71 +26,14 @@ server_session = Session(app)
 server_session.init_app(app)
 db.init_app(app)
 
-with app.app_context():
-    db.create_all()
-    
-    # DB initialization
-    with open('codimap_list.json') as json_file:
-        data = json.load(json_file)
-        for styling in data[:100]:
-            styling_data = Styling(
-                title=styling['title'],
-                styling_date=datetime.strptime(styling['styling_date'], '%Y.%m.%d').date(),
-                view_num=styling['view_num'],
-                styling_txt=styling['styling_txt'],
-                image_url=styling['image_url'],
-                style_tag=styling['style_tag']
-            )
-            db.session.add(styling_data)
-            db.session.flush()
+# Initialize database
+db_init(app, db)
 
-            for item in styling['item_list']:
-                item_data = Item.query.filter_by(title=item['title']).first()
-                if not item_data:
-                    avg_color_top = item.get('avg_color_top', [])
-                    avg_color_bottom = item.get('avg_color_bottom', [])
-                    avg_color_whole = item.get('avg_color_whole', [])
-                    item_data = Item(
-                        title=item['title'],
-                        big_category=item['big_category'],
-                        small_category=item['small_category'],
-                        image_url=item['image_url'],
-                        avg_color_top_r=avg_color_top[0] if avg_color_top and not math.isnan(avg_color_top[0]) else None,
-                        avg_color_top_g=avg_color_top[1] if avg_color_top and not math.isnan(avg_color_top[1]) else None,
-                        avg_color_top_b=avg_color_top[2] if avg_color_top and not math.isnan(avg_color_top[2]) else None,
-                        avg_color_bottom_r=avg_color_bottom[0] if avg_color_bottom and not math.isnan(avg_color_bottom[0]) else None,
-                        avg_color_bottom_g=avg_color_bottom[1] if avg_color_bottom and not math.isnan(avg_color_bottom[1]) else None,
-                        avg_color_bottom_b=avg_color_bottom[2] if avg_color_bottom and not math.isnan(avg_color_bottom[2]) else None,
-                        avg_color_whole_r=avg_color_whole[0] if avg_color_whole and not math.isnan(avg_color_whole[0]) else None,
-                        avg_color_whole_g=avg_color_whole[1] if avg_color_whole and not math.isnan(avg_color_whole[1]) else None,
-                        avg_color_whole_b=avg_color_whole[2] if avg_color_whole and not math.isnan(avg_color_whole[2]) else None
-                    )
-                    db.session.add(item_data)
-                    db.session.flush()
-                    
-                styling_data.items.append(item_data)
-                for hashtag in item['item_hashtags']:
-                    hashtag_data = Hashtag.query.filter_by(tag=hashtag).first()
-                    if not hashtag_data:
-                        hashtag_data = Hashtag(tag=hashtag)
-                        db.session.add(hashtag_data)
-                        db.session.flush()
-                    item_data.item_hashtags.append(hashtag_data)
-            for hashtag in styling['hashtags']:
-                hashtag_data = Hashtag.query.filter_by(tag=hashtag).first()
-                if not hashtag_data:
-                    hashtag_data = Hashtag(tag=hashtag)
-                    db.session.add(hashtag_data)
-                    db.session.flush()
-                styling_data.styling_hashtags.append(hashtag_data)
-        # Commit changes to the database
-        db.session.commit()
 
-city = "Seoul"
-apikey="97abddef06b1f625921e7b5ca2e6695c"
-lang = "kr"
-api = f"https://api.openweathermap.org/data/3.0/onecall?lat=37.53&lon=127.02&appid={apikey}"
-# api = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apikey}"
+apikey = "97abddef06b1f625921e7b5ca2e6695c"
+lat = "37.5665"
+lon = "126.9780"
+api = f"api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={apikey}&units=metric"
 
 @app.route('/api/saveData', methods=['POST'])
 def handle_post():
@@ -154,10 +95,13 @@ def register_user():
 def login_user():
     id = request.json["userId"]
     password = request.json["password"]
+    # breakpoint()
 
     user = User.query.filter_by(id=id).first()
     if user and bcrypt.check_password_hash(user.password, password):
+        print(f"User {user.id} logged in")
         session['user_id'] = user.id
+        session.modified = True
         return jsonify({
             "id": user.id,
             "email": user.email
@@ -390,7 +334,7 @@ def image_upload():
 
     # Get top 3 predictions
     top3 = indices_of_top_n(predictions, 3)
-    print(predictions)
+    # print(predictions)
     
     userStyle = UserStyle.query.filter_by(user_id=user_id).first()
     if userStyle:
@@ -515,44 +459,40 @@ def get_codimap():
         '아주 둔감':1
     }
     user_id = session.get("user_id")
+    print(f"get_codimap user_id: {user_id}")
     if not user_id:
         user_id = "aa"
 
     hour = request.json["hour"]
+    print("hour: ", hour)
     if hour is None:
         hour = 0
     
     isCloset = request.json["isMyCloset"]
     isCloset = True if isCloset == 1 else False
-    # breakpoint()
+
+    # Get current time and target time
+    UTC = pytz.timezone('UTC')
+    now = datetime.now(UTC)
+
+
     # (TODO) Get temperature using weather API
-    # result = requests.get(api)
-    # data = json.loads(result.text)
-    # breakpoint()  
-    temp = 37.5
+    result = requests.get(f"http://{api}").json()['list']
+    temp = getClosestTemp(result, hour)
+    print("temp: ", temp)
 
     # Get user style tag
+    # breakpoint()
     codybti = Codybti.query.filter_by(user_id=user_id).first()
     trend_score = trend_table[codybti.trend]
 
-    if hour == 0:
-        # Current time recommendation
-        comfortClo = 0.5
-        threshold = 0.1
-        
-        # Filter by comfortClo
-        styling_list = Styling.query.filter(Styling.style_tag == UserStyle.style1).order_by(
-                                    func.abs(Styling.clo - comfortClo)).all()
+    # Current time recommendation
+    comfortClo = 0.5
+    threshold = 0.1
     
-    else:
-        # Future time recommendation
-        comfortClo = 0.5
-        threshold = 0.1
-        
-        # Filter by comfortClo
-        styling_list = Styling.query.filter(Styling.style_tag == UserStyle.style1).order_by(
-                                    func.abs(Styling.clo - comfortClo)).all()
-
+    # Filter by comfortClo
+    styling_list = Styling.query.filter(Styling.style_tag == UserStyle.style1).order_by(
+                                func.abs(Styling.clo - comfortClo)).all()
     result_list = []
     if trend_score >= 3:
         # Get year from Styling table
@@ -563,6 +503,23 @@ def get_codimap():
                 result_list.append(styling)
     else:
         result_list = styling_list
+    
+    # Filter by temperature and corresponding clo value
+    if temp < 5:
+        min_clo, max_clo = (2.1, 100)
+    elif temp < 10:
+        min_clo, max_clo = (1.85, 2.1)
+    elif temp < 15:
+        min_clo, max_clo = (1.7, 1.85)
+    elif temp < 20:
+        min_clo, max_clo = (1.2, 1.7)
+    elif temp < 25:
+        min_clo, max_clo = (0.3, 1.2)
+    else:
+        min_clo, max_clo = (0.0, 0.3)
+    
+    result_list = [styling for styling in result_list if styling.clo >= min_clo and styling.clo < max_clo]
+
 
     codimap_list = []
     for styling in result_list:
@@ -580,3 +537,20 @@ def get_codimap():
     random.shuffle(codimap_list)
 
     return jsonify(codimap_list), 200
+
+def getClosestTemp(json_list, hour):
+    # Get temperature of the closest time after 'hour' hours from now
+    UTC = pytz.timezone('UTC')
+    now = datetime.now(UTC)
+    target = now + timedelta(hours=hour)
+
+    min_diff = timedelta(days=365*100)
+    min_idx = 0
+    for i in range(len(json_list)):
+        json_date = datetime.fromtimestamp(json_list[i]['dt'], UTC)
+        diff = abs(target - json_date)
+        if diff.total_seconds() < min_diff.total_seconds():
+            min_diff = diff
+            min_idx = i
+
+    return json_list[min_idx]['main']['temp']
