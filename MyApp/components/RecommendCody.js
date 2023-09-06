@@ -1,13 +1,14 @@
 import React, { useState, useEffect} from 'react';
-import { Text, FlatList, View, Image, StyleSheet, } from "react-native";
+import { Text, FlatList, View, Image, StyleSheet, TouchableOpacity} from "react-native";
 import Checkbox from 'expo-checkbox';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { API_URL } from '@env';
 // npx expo install expo-checkbox
 // https://docs.expo.dev/versions/latest/sdk/checkbox/
 
 const CodySet = props => {
-    const {cody} = props;
-    const [isSelected, setIsSelected] = useState(true);
+    const {cody} = props; // props is used to pass data between components (parent to child)
+    const [isSelected, setIsSelected] = useState(false);
 
     useEffect(() => {
       const fetchLike = async () => {
@@ -43,6 +44,7 @@ const CodySet = props => {
     }, [isSelected]);
 
     return (
+      // Return part specifies how the component should look like (UI rendering)
         <View style={{alignItems:'center'}}>
             <Text style={styles.titleText}>{cody.title}</Text>
             <Text style={styles.subText}>{cody.subText}</Text>
@@ -51,18 +53,28 @@ const CodySet = props => {
                 style = {styles.image} />
             <View style={{flexDirection:'row', alignItems:'center'}}>
                 <FlatList
-                    data={cody.hashtags.slice(0,3)} // selectedImages 리스트 내의 모든 항목에 대해
+                    data={cody.hashtags.slice(0, 3)} // selectedImages 리스트 내의 모든 항목에 대해
                     numColumns={3}
                     renderItem={({item}) => ( // i를 이렇게 render해라
                         <Text style={styles.hashtag}>#{item}</Text>
                     )} 
                 />
-                <Checkbox
+                {/* <Checkbox
                     style={styles.checkbox}
                     value={isSelected}
                     onValueChange={setIsSelected}
                     color={isSelected ? '#AFD3E2' : undefined}
-                />
+                /> */}
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => setIsSelected(!isSelected)}
+                >
+                  <Icon
+                    name={isSelected ? 'heart' : 'heart-o'}
+                    size={30}
+                    color={isSelected ? 'red' : 'grey'}
+                  />
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -75,7 +87,7 @@ const CodySet = props => {
         marginBottom:15
       },
       checkbox: {
-        marginBottom:10,
+        marginBottom:9
       },  
       hashtag: {
         backgroundColor:'#AFD3E2',
@@ -84,7 +96,7 @@ const CodySet = props => {
         marginRight:5,
         paddingHorizontal:7,
         paddingVertical:3,
-        marginBottom:10
+        marginBottom:7
       },
       titleText: {
         fontSize:20,
@@ -95,7 +107,11 @@ const CodySet = props => {
       subText:{
         fontSize:15,
         marginBottom:5
-      }
+      },
+      button: {
+        marginTop: 0,
+        marginRight: 10,
+      },
     });
   
   export default CodySet;
