@@ -11,12 +11,39 @@ function SignUpScreen({ navigation }) {
   const [password2, setPassword2] = useState("");
   const [email, setEmail] = useState("");
 
+  const isValid = () => {
+    const idPattern = /^[A-Za-z0-9]{8,12}$/;
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+    if (!idPattern.test(userId)) {
+      alert("아이디는 영문, 숫자로 8-12자 이내로 작성해주세요.");
+      return false;
+    }
+    if (!passwordPattern.test(password1)) {
+      alert("비밀번호는 영문, 숫자, 특수문자를 포함하여 최소 8자 이상이어야 합니다.");
+      return false;
+    }
+    if (!emailPattern.test(email)) {
+      alert("이메일 형식이 올바르지 않습니다.");
+      return false;
+    }
+    if (password1 !== password2) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return false;
+    }
+    return true;
+  };
+
   // Define function to check if all values have been set and save data
   const saveUserData = () => {
 
     // Check if all values have been set
     if(userId && password1 && password2 && email) {
       // Prepare data to send to server
+      if (isValid() == false) {
+        return;
+      }
       if (password1 == password2) {
         const userData = {
           userId: userId,
@@ -90,6 +117,7 @@ function SignUpScreen({ navigation }) {
             value={password1}
             autoCapitalize='none'
             placeholderTextColor="#D9D9D9"
+            secureTextEntry={true}
           />
           <TextInput
             style={styles.textInput}
@@ -98,6 +126,7 @@ function SignUpScreen({ navigation }) {
             value={password2}
             autoCapitalize='none'
             placeholderTextColor="#D9D9D9"
+            secureTextEntry={true}
           />
           <View style={styles.textContainer}>
           <Text
@@ -106,7 +135,7 @@ function SignUpScreen({ navigation }) {
         </View>
         <TextInput
             style={styles.textInput}
-            placeholder="영문, 숫자 5-11자"
+            placeholder="이메일 형식"
             onChangeText={setEmail}
             value={email}
             autoCapitalize='none'
