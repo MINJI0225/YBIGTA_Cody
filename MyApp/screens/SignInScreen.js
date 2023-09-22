@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native';
 import SaveButton from '../components/SaveButton.js';
+import { API_URL } from '@env';
 
 function SignInScreen({ navigation }) {
   // Define states
@@ -21,7 +22,7 @@ function SignInScreen({ navigation }) {
       };
 
       // Send data to server
-      fetch('http://localhost:5000/login', {
+      fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -31,13 +32,21 @@ function SignInScreen({ navigation }) {
       .then(response => response.json())
       .then(data => {
         console.log('Success:', data);
+        if (data.id) {
+          setTimeout(() => {
+            navigation.navigate('TabNavigation');
+          }
+          , 500);
+        } else {
+          alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+        }
       })
       .catch((error) => {
         console.error('Error:', error);
       });
 
-      // Navigate to next screen
-      navigation.navigate('Cody_BTI');
+      // // Navigate to next screen
+      // navigation.navigate('TabNavigation');
     
     } else {
       // If no, alert the user to make a selection

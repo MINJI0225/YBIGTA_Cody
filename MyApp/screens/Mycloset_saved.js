@@ -12,7 +12,6 @@ function Mycloset_saved({navigation}) {
     
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView>
           <FlatList 
             data={savedCody} // selectedImages 리스트 내의 모든 항목에 대해
             numColumns={1}
@@ -21,7 +20,6 @@ function Mycloset_saved({navigation}) {
             )} 
           />
           <SaveButton title="저장" />
-        </ScrollView>
       </SafeAreaView>
     );
 }

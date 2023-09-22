@@ -1,92 +1,101 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, FlatList, ScrollView} from "react-native";
-import ImageButton from "../components/ImageButton";
-import SaveButton from "../components/SaveButton";
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, FlatList } from 'react-native';
+import ImageButton from '../components/ImageButton';
+import SaveButton from '../components/SaveButton';
+import { API_URL } from '@env';
 
-
-function Mycloset_setting({navigation}) {
+function Mycloset_setting({ navigation }) {
   const [selectedImages, setSelectedImages] = useState([]);
 
-  const handleImagePress = (image, isSelected) => {
+  const handleImagePress = (imageKey, isSelected) => {
     if (isSelected) {
-      setSelectedImages([...selectedImages, image]);
+      setSelectedImages(prev => [...prev, imageKey]);
+      console.log('isSelected - selectedImages', selectedImages);
     } else {
-      setSelectedImages(selectedImages.filter((selectedImage) => selectedImage !== image));
+      setSelectedImages(prev => prev.filter(key => key !== imageKey));
+      console.log('!isSelected - selectedImages', selectedImages);
     }
   };
 
+  useEffect(() => {
+    console.log('selectedImages:', selectedImages);
+  }, [selectedImages]);
 
-  const ClothImageMap = {
-    19: 'half_knit',
-    20: 'white_tshirt',
-    21: 'black_skirt',
-    22: 'cardigan',
-    23: 'blue_jean',
-    24: 'white_cottonp',
-    25: 'black_slacks',
-    26: 'half-jean',
-    27: 'black_tshirt',
-    28: 'beige_slacks',
-    29: 'sky_jean',
-    30: 'long_knit',
-    31: 'white_tshirt',
-    32: 'black_shirt',
-    33: 'white_skirt'
-  };
-
-  const result = {};
-  
-  Object.keys(ClothImageMap).forEach((key) => {
-    result[ClothImageMap[key]] = selectedImages.includes(parseInt(key));
-  });
 
   const handleSave = () => {
-    // selectedImages 최종 저장, 배열 다음페이지로 전달, DB로 전달
-    navigation.navigate('Mycloset_pickandchoose', { selectedImages });
-    console.log(result);
+    const result = {};
 
+    urlList.forEach(({ key }) => {
+      result[key] = selectedImages.includes(key) ? 1 : 0;
+    });
 
+    console.log('result:', result);
+    
+    fetch(`${API_URL}/mycloset/post`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(result),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+      navigation.navigate('Mycloset_main');
+    // Rest of your save logic
   };
 
   const urlList = [
-    { image_url : require('../assets/mycloset/black_knit.jpg') },
-    { image_url : require('../assets/mycloset/white_tshirt.jpg') },
-    { image_url : require('../assets/mycloset/black_long_skirt.jpg') },
-    { image_url : require('../assets/mycloset/cardigan.jpg') },
-    { image_url : require('../assets/mycloset/dark_denim_pants.jpg') },  
-    { image_url : require('../assets/mycloset/white_pants.jpg') },
-    { image_url : require('../assets/mycloset/black_slacks.jpg') },
-    { image_url : require('../assets/mycloset/short_denim_pants.jpg') },
-    { image_url : require('../assets/mycloset/black_tshirt.jpg') },
-    { image_url : require('../assets/mycloset/beige_slacks.jpg') },
-    { image_url : require('../assets/mycloset/light_denim_pants.jpg') },
-    { image_url : require('../assets/mycloset/long_sleeve_knit.jpg') },
-    { image_url : require('../assets/mycloset/white_shirt.jpg') },
-    { image_url : require('../assets/mycloset/black_shirt.jpg') },
-    { image_url : require('../assets/mycloset/white_short_skirt.png') },
-  ]
+    { key: 'half_knit', image_url: require('../assets/mycloset/black_knit.jpg') },
+    { key: 'white_tshirt', image_url: require('../assets/mycloset/white_tshirt.jpg') },
+    { key: 'black_skirt', image_url: require('../assets/mycloset/black_long_skirt.jpg') },
+    { key: 'cardigan', image_url: require('../assets/mycloset/cardigan.jpg') },
+    { key: 'blue_jean', image_url: require('../assets/mycloset/dark_denim_pants.jpg') },
+    { key: 'white_cottonp', image_url: require('../assets/mycloset/white_pants.jpg') },
+    { key: 'black_slacks', image_url: require('../assets/mycloset/black_slacks.jpg') },
+    { key: 'half_jean', image_url: require('../assets/mycloset/short_denim_pants.jpg') },
+    { key: 'black_tshirt', image_url: require('../assets/mycloset/black_tshirt.jpg') },
+    { key: 'beige_slacks', image_url: require('../assets/mycloset/beige_slacks.jpg') },
+    { key: 'sky_jean', image_url: require('../assets/mycloset/light_denim_pants.jpg') },
+    { key: 'long_knit', image_url: require('../assets/mycloset/long_sleeve_knit.jpg') },
+    { key: 'white_shirt', image_url: require('../assets/mycloset/white_shirt.jpg') },
+    { key: 'black_shirt', image_url: require('../assets/mycloset/black_shirt.jpg') },
+    { key: 'white_skirt', image_url: require('../assets/mycloset/white_short_skirt.png') },
+    // Rest of the image URLs
+  ];
 
-    return (
-      <View style={styles.container}>
+  return (
+    <View style={styles.container}>
+      <View style={styles.imageContainer}>
         <FlatList
-          data={urlList} // selectedImages 리스트 내의 모든 항목에 대해
+          data={urlList}
           numColumns={3}
-          renderItem={({item}) => ( // i를 이렇게 render해라
-          <ImageButton src={item.image_url} onImagePress={handleImagePress}/>
-          )} 
+          renderItem={({ item }) => (
+            <ImageButton src={item.image_url} imageKey={item.key} onImagePress={handleImagePress} />
+          )}
         />
-        <SaveButton title='저장' onPress={handleSave}/>  
       </View>
-    );
+      <SaveButton title="저장" onPress={handleSave} />
+    </View>
+  );
 }
-
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#FFFFFF',
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
-  });
-
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imageContainer: {
+    flex: 1,
+    width: '100%',
+    maxHeight: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 export default Mycloset_setting;

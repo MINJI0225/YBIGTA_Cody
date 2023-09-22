@@ -11,9 +11,12 @@ from torchvision.transforms import ToTensor
 import cv2
 import numpy as np
 from PIL import Image
+import pandas as pd
 
 categories = ['스트릿', '캐주얼', '시크', '스포츠', '댄디', '포멀', '걸리시', 
             '로맨틱', '레트로', '골프', '아메리칸 캐주얼', '고프코어']
+
+df = pd.read_csv('./clo.csv')
 
 def index_to_category(index):
     return categories[index]
@@ -70,5 +73,28 @@ def predict(model, images):
 
     return scores
 
-# def get_style_scores(images):
+def get_clo_codymap(Styling, styling_id):
+    styling = Styling.query.get(styling_id)
+    # Access each Item in the Styling and get the total clo
 
+    total_clo = 0.0
+    for item in styling.items:
+        total_clo += get_clo_item(item.big_category, item.small_category)
+
+
+def get_clo_item(big_category, small_category):
+    for index, row in df.iterrows():
+        if row['big_category'] == big_category and row['small_category'] == small_category:
+            return row['score']
+    return 0.0
+
+def calculate_color_difference(color1, color2):
+    # color1, color2: RGB tuple
+    # return: color difference
+
+    # Get simple difference between each color
+    diff = np.array(color1) - np.array(color2)
+    # Get Euclidean distance
+    diff = np.sqrt(np.sum(diff ** 2))
+
+    return diff

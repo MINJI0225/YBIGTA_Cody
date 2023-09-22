@@ -3,6 +3,10 @@ import * as ImagePicker from 'expo-image-picker';
 import { StyleSheet, Image, View, FlatList, Alert, Text } from 'react-native';
 import ImageSelectButton from '../components/ImageSelectButton.js';
 import SaveButton from '../components/SaveButton.js';
+import { Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { API_URL } from '@env';
+
 
 function MyStyle({navigation}) {
   const [selectedImages, setSelectedImages] = useState([]); //선택한 이미지들을 저장하는 상태
@@ -44,7 +48,8 @@ function MyStyle({navigation}) {
     });
 
     try {
-      const response = await fetch('http://localhost:5000/image/upload', { //여기 수정해야함
+      navigation.navigate('LoadingScreen');
+      const response = await fetch(`${API_URL}/image/upload`, { //여기 수정해야함
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -54,37 +59,42 @@ function MyStyle({navigation}) {
 
       if (response.ok) {
         console.log('이미지 업로드 성공');
-        navigation.navigate('LoadingScreen');
       } else {
         console.log('이미지 업로드 실패');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.log('Error:', error);
     }
-  navigation.navigate('LoadingScreen')
+
+    try {
+      const response = await fetch(`${API_URL}/userStyle/get`);
+      if (response.ok) {
+        console.log('Model response success');
+        const data = await response.json();
+        console.log(data);
+        navigation.navigate('StyleIcon', { data });
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.imageContainer}>
-      {/* 선택된 이미지가 있을 경우 이미지를 표시 */}
-        <FlatList
-          data={selectedImages} // selectedImages 리스트 내의 모든 항목에 대해
-          keyExtractor={(item) => item.uri}
-          numColumns={3}
-          renderItem={({item}) => ( // i를 이렇게 render해라
-            <Image
-              source={{uri : item.uri}} 
-              style={styles.image} 
-              resizeMode='cover'/>
-          )}
-        />
-        </View>
-        {/* 이미지 선택 버튼 */}
-        <ImageSelectButton onPress={selectImage} />
-        {/* 저장 버튼 */}
-        <SaveButton title='저장' onPress={saveData} 
-        />
+      <FlatList
+        data={selectedImages} // selectedImages 리스트 내의 모든 항목에 대해
+        keyExtractor={(item) => item.uri}
+        numColumns={3}
+        renderItem={({item}) => ( // i를 이렇게 render해라
+          <Image
+            source={{uri : item.uri}} 
+            style={styles.image} 
+            resizeMode='cover'/>
+        )} 
+      />
+      <ImageSelectButton onPress={selectImage} />
+      <SaveButton title='저장' onPress={saveData} 
+      />
     </View>
   );
 }
