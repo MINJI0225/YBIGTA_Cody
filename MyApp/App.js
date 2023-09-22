@@ -24,6 +24,7 @@ import Mycloset_saved from "./screens/Mycloset_saved";
 import Mycloset_setting from "./screens/Mycloset_setting";
 import StyleIcon from "./screens/StyleIcon";
 import LoadingScreen from "./screens/LoadingScreen";
+import PickAndChooseRecommend from './screens/PickAndChooseRecommend';
 
 // Tabs 
 const TabNavigation = () => {
@@ -83,6 +84,9 @@ const MyclosetTabStack = () => {
       <Stack.Screen name="Mycloset_saved" component={Mycloset_saved} options={HeaderOptions} />
       <Stack.Screen name="Mycloset_setting" component={Mycloset_setting} options={HeaderOptions} />
       <Stack.Screen name="Mycloset_pickandchoose" component={Mycloset_pickandchoose} />
+      <Stack.Screen name="Mycloset_saved" component={Mycloset_saved} />
+      <Stack.Screen name="Mycloset_setting" component={Mycloset_setting} />
+      <Stack.Screen name="PickAndChooseRecommend" component={PickAndChooseRecommend} />
     </Stack.Navigator>
   )
 }
