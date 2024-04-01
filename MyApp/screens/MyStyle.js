@@ -1,6 +1,6 @@
 import React, { useState, } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { StyleSheet, Image, View, FlatList, Alert } from 'react-native';
+import { StyleSheet, Image, View, FlatList, Alert, Text } from 'react-native';
 import ImageSelectButton from '../components/ImageSelectButton.js';
 import SaveButton from '../components/SaveButton.js';
 import { Button } from 'react-native-elements';
@@ -107,6 +107,11 @@ const styles = StyleSheet.create({
       backgroundColor: '#FFFFFF',
       padding: 20
     },
+    imageContainer: {
+      flex: 1,
+      width: '100%',
+      maxHeight: '50%',
+    },
     image: {
       width: '31%',
       height: 150,
@@ -131,6 +136,10 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: 'bold',
     },
+    GeneralText: {
+      color: 'gray',
+      fontsize: 20
+    }
 });
 
 export default MyStyle;

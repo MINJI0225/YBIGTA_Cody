@@ -9,6 +9,9 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 // components import
+import HeaderOptions from "./components/HeaderOptions";
+
+// screens import
 import HomeScreen from "./screens/HomeScreen";
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
@@ -68,7 +71,7 @@ const TabNavigation = () => {
 const HomeTabStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="MainPage" component={MainPage} />
+      <Stack.Screen name="MainPage" component={MainPage} options={HeaderOptions} />
     </Stack.Navigator>
   )
 }
@@ -76,7 +79,10 @@ const HomeTabStack = () => {
 const MyclosetTabStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Mycloset_main" component={Mycloset_main} />
+      <Stack.Screen name="Mycloset_main" component={Mycloset_main} options={HeaderOptions} />
+      <Stack.Screen name="Mycloset_pickandchoose" component={Mycloset_pickandchoose} options={HeaderOptions} />
+      <Stack.Screen name="Mycloset_saved" component={Mycloset_saved} options={HeaderOptions} />
+      <Stack.Screen name="Mycloset_setting" component={Mycloset_setting} options={HeaderOptions} />
       <Stack.Screen name="Mycloset_pickandchoose" component={Mycloset_pickandchoose} />
       <Stack.Screen name="Mycloset_saved" component={Mycloset_saved} />
       <Stack.Screen name="Mycloset_setting" component={Mycloset_setting} />
@@ -88,10 +94,10 @@ const MyclosetTabStack = () => {
 const MyStyleStack = () => {
   return(
     <Stack.Navigator>
-      <Stack.Screen name="Cody_BTI" component={Cody_BTI} />
-      <Stack.Screen name="MyStyle" component={MyStyle} />
-      <Stack.Screen name="LoadingScreen" component={LoadingScreen} />
-      <Stack.Screen name="StyleIcon" component={StyleIcon} />
+      <Stack.Screen name="Cody_BTI" component={Cody_BTI} options={HeaderOptions} />
+      <Stack.Screen name="MyStyle" component={MyStyle} options={HeaderOptions} />
+      <Stack.Screen name="LoadingScreen" component={LoadingScreen} options={HeaderOptions} />
+      <Stack.Screen name="StyleIcon" component={StyleIcon} options={HeaderOptions} />
     </Stack.Navigator>
   )
 }
@@ -102,21 +108,12 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="HomeScreen">
         <Stack.Screen options = {{ headerShown: false}} name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="SignInScreen" component={SignInScreen} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
-        <Stack.Screen name="Cody_BTI" component={Cody_BTI} 
-                      options={{
-                        headerStyle: {
-                          backgroundColor: '#AFD3E2',
-                          borderBottomColor: 'transparent',
-                        },
-                        headerTintColor: '#fff',
-                        headerTitleStyle: {fontWeight: 'bold'},
-                      }}
-                    />
-        <Stack.Screen name="MyStyle" component={MyStyle} />
+        <Stack.Screen name="SignInScreen" component={SignInScreen} options={HeaderOptions} />
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={HeaderOptions} />
+        <Stack.Screen name="Cody_BTI" component={Cody_BTI} options={HeaderOptions}/>
+        <Stack.Screen name="MyStyle" component={MyStyle} options={HeaderOptions} />
         <Stack.Screen options = {{ headerShown: false}} name="LoadingScreen" component={LoadingScreen} />
-        <Stack.Screen name="StyleIcon" component={StyleIcon} />
+        <Stack.Screen name="StyleIcon" component={StyleIcon} options={HeaderOptions} />
         <Stack.Screen options = {{ headerShown: false}} name="TabNavigation" component={TabNavigation} />
       </Stack.Navigator>
     </NavigationContainer>
